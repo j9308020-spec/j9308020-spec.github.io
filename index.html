@@ -5,32 +5,11 @@
 <title>Cuidado de Cultivos</title>
 
 <style>
-body {
-    font-family: Arial;
-    background-color: #f0f8f5;
-}
-
-h1 {
-    color: green;
-}
-
-.seccion {
-    background: white;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 10px;
-}
-
-.cultivo {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px;
-    background: white;
-}
-
-button {
-    margin-top: 5px;
-}
+body { font-family: Arial; background-color: #f0f8f5; }
+h1 { color: green; }
+.seccion { background: white; padding: 10px; margin: 10px; border-radius: 10px; }
+.cultivo { border: 1px solid #ccc; padding: 10px; margin: 10px; background: white; }
+button { margin-top: 5px; }
 </style>
 </head>
 
@@ -58,116 +37,16 @@ button {
 
 const plantas = [
 {
-nombre:"Lechuga",
-riego:"Frecuente",
-sol:"4–6 horas, semisombra",
-tierra:"Suelta y fértil",
-composta:"Alta",
-germinacion:"5–10 días"
+nombre:"Lechuga", riego:"Frecuente", sol:"4–6h", tierra:"Suelta", composta:"Alta", germinacion:"5–10 días"
 },
 {
-nombre:"Zanahoria",
-riego:"Moderado",
-sol:"6–8 horas sol",
-tierra:"Suelta y profunda",
-composta:"Media",
-germinacion:"10–20 días"
+nombre:"Zanahoria", riego:"Moderado", sol:"6–8h", tierra:"Profunda", composta:"Media", germinacion:"10–20 días"
 },
 {
-nombre:"Caña de azúcar",
-riego:"Abundante",
-sol:"Pleno sol",
-tierra:"Fértil y profunda",
-composta:"Alta",
-germinacion:"7–14 días"
+nombre:"Limón", riego:"2–3/sem", sol:"6–8h", tierra:"Drenada", composta:"Alta", germinacion:"10–20 días"
 },
 {
-nombre:"Café",
-riego:"Regular",
-sol:"Sombra parcial",
-tierra:"Ácida y rica",
-composta:"Alta",
-germinacion:"30–60 días"
-},
-{
-nombre:"Sorgo",
-riego:"Bajo a moderado",
-sol:"Pleno sol",
-tierra:"Suelo suelto",
-composta:"Media",
-germinacion:"5–10 días"
-},
-{
-nombre:"Limón",
-riego:"2–3 veces por semana",
-sol:"6–8 horas sol",
-tierra:"Suelta y drenada",
-composta:"Alta",
-germinacion:"10–20 días"
-},
-{
-nombre:"Aguacate",
-riego:"2–3 veces por semana",
-sol:"Pleno sol",
-tierra:"Bien drenada",
-composta:"Alta",
-germinacion:"2–6 semanas"
-},
-{
-nombre:"Calabaza",
-riego:"Constante",
-sol:"6+ horas sol",
-tierra:"Fértil",
-composta:"Alta",
-germinacion:"5–10 días"
-},
-{
-nombre:"Mango",
-riego:"Moderado",
-sol:"Pleno sol",
-tierra:"Arenosa ligera",
-composta:"Alta",
-germinacion:"2–4 semanas"
-},
-{
-nombre:"Sandía",
-riego:"Abundante",
-sol:"Mucho sol",
-tierra:"Arenosa",
-composta:"Alta",
-germinacion:"4–8 días"
-},
-{
-nombre:"Plátano",
-riego:"Abundante",
-sol:"6–8 horas sol",
-tierra:"Rica en nutrientes",
-composta:"Alta",
-germinacion:"1–3 meses"
-},
-{
-nombre:"Papaya",
-riego:"Moderado",
-sol:"Pleno sol",
-tierra:"Ligera",
-composta:"Alta",
-germinacion:"2–4 semanas"
-},
-{
-nombre:"Naranja",
-riego:"Moderado",
-sol:"Pleno sol",
-tierra:"Fértil y drenada",
-composta:"Alta",
-germinacion:"2–6 semanas"
-},
-{
-nombre:"Agave",
-riego:"Muy bajo",
-sol:"Pleno sol",
-tierra:"Arenosa",
-composta:"Baja",
-germinacion:"2–4 semanas"
+nombre:"Aguacate", riego:"Moderado", sol:"Sol directo", tierra:"Drenada", composta:"Alta", germinacion:"2–6 semanas"
 }
 ];
 
@@ -186,281 +65,74 @@ function mostrarCatalogo(){
     let div = document.getElementById("catalogo");
     div.innerHTML = "";
 
-    plantas.forEach(p => {
+    plantas.forEach((p, index) => {
         div.innerHTML += `
         <div class="cultivo">
             <h3>${p.nombre}</h3>
-            <p>Riego cada ${p.riego} días</p>
-            <button onclick="agregar('${p.nombre}', ${p.riego})">Agregar al huerto</button>
-        </div>
-        `;
-    });
-}
+            <p>Riego: ${p.riego}</p>
+            <p>Sol: ${p.sol}</p>
+            <p>Tierra: ${p.tierra}</p>
+            <p>Composta: ${p.composta}</p>
+            <p>Germinación: ${p.germinacion}</p>
 
-function agregar(nombre, riego){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    huerto.push({
-        nombre: nombre,
-        riego: riego,
-        fecha: new Date().getDate()
-    });
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-function eliminar(index){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    huerto.splice(index, 1);
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-function mostrarHuerto(){
-    let div = document.getElementById("huerto");
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    div.innerHTML = "";
-
-    huerto.forEach((p, index) => {
-        let hoy = new Date().getDate();
-        let toca = (hoy - p.fecha) % p.riego === 0;
-
-        div.innerHTML += `
-        <div>
-            <p>${p.nombre} ${toca ? "💧 Hoy regar" : "OK"}</p>
-            <button onclick="eliminar(${index})">Eliminar</button>
-        </div>
-        `;
-    });
-}
-
-window.onload = function(){
-    let nombre = localStorage.getItem("nombre");
-    let ubicacion = localStorage.getItem("ubicacion");
-
-    if(nombre){
-        document.getElementById("saludo").innerText =
-        "Hola " + nombre + " desde " + ubicacion;
-    }
-
-    mostrarCatalogo();
-    mostrarHuerto();
-}
-
-</script>
-
-</body>
-</html>function agregar(nombre, riego){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    huerto.push({
-        nombre: nombre,
-        riego: riego,
-        fecha: new Date().getDate()
-    });
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-// ELIMINAR
-function eliminar(index){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    huerto.splice(index, 1);
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-// HUERTO
-function mostrarHuerto(){
-    let div = document.getElementById("huerto");
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    div.innerHTML = "";
-
-    huerto.forEach((p, index) => {
-        let hoy = new Date().getDate();
-        let toca = (hoy - p.fecha) % p.riego === 0;
-
-        div.innerHTML += `
-        <div>
-            <p>${p.nombre} ${toca ? "💧 Hoy regar" : "OK"}</p>
-            <button onclick="eliminar(${index})">Eliminar</button>
-        </div>
-        `;
-    });
-}
-
-// INICIO
-window.onload = function(){
-    let nombre = localStorage.getItem("nombre");
-    let ubicacion = localStorage.getItem("ubicacion");
-
-    if(nombre){
-        document.getElementById("saludo").innerText =
-        "Hola " + nombre + " desde " + ubicacion;
-    }
-
-    mostrarCatalogo();
-    mostrarHuerto();
-}
-
-</script><!-- PERFIL -->
-<div class="seccion">
-<h2>Perfil</h2>
-<input id="nombre" placeholder="Nombre">
-<input id="ubicacion" placeholder="Ubicación">
-<button onclick="guardarPerfil()">Guardar</button>
-<p id="saludo"></p>
-</div>
-
-<!-- MI HUERTO -->
-<div class="seccion">
-<h2>Mi Huerto</h2>
-<div id="huerto"></div>
-</div>
-
-<!-- CATALOGO -->
-<h2 style="margin-left:10px;">Catálogo de Cultivos</h2>
-
-<div id="catalogo"></div>
-
-<script>
-
-// LISTA DE CULTIVOS (tus 25)
-const plantas = [
-{nombre:"Maíz", riego:3},
-{nombre:"Frijol", riego:3},
-{nombre:"Sorgo", riego:4},
-{nombre:"Trigo", riego:3},
-{nombre:"Arroz", riego:2},
-{nombre:"Aguacate", riego:5},
-{nombre:"Mango", riego:5},
-{nombre:"Plátano", riego:2},
-{nombre:"Naranja", riego:4},
-{nombre:"Limón", riego:4},
-{nombre:"Jitomate", riego:2},
-{nombre:"Cebolla", riego:3},
-{nombre:"Chile", riego:3},
-{nombre:"Lechuga", riego:2},
-{nombre:"Zanahoria", riego:3},
-{nombre:"Caña de azúcar", riego:2},
-{nombre:"Café", riego:4},
-{nombre:"Cacao", riego:3},
-{nombre:"Algodón", riego:4},
-{nombre:"Aloe vera", riego:7},
-{nombre:"Alfalfa", riego:3},
-{nombre:"Agave", riego:7},
-{nombre:"Papaya", riego:3},
-{nombre:"Sandía", riego:2},
-{nombre:"Calabaza", riego:3}
-];
-
-// PERFIL
-function guardarPerfil(){
-    let nombre = document.getElementById("nombre").value;
-    let ubicacion = document.getElementById("ubicacion").value;
-
-    localStorage.setItem("nombre", nombre);
-    localStorage.setItem("ubicacion", ubicacion);
-
-    document.getElementById("saludo").innerText =
-    "Hola " + nombre + " desde " + ubicacion;
-}
-
-// MOSTRAR CATALOGO
-function mostrarCatalogo(){
-    let div = document.getElementById("catalogo");
-    div.innerHTML = "";
-
-    plantas.forEach(p => {
-        div.innerHTML += `
-        <div class="cultivo">
-            <h3>${p.nombre}</h3>
-            <p>Riego cada ${p.riego} días</p>
-            <button onclick="agregar('${p.nombre}', ${p.riego})">Agregar al huerto</button>
-        </div>
-        `;
-    });
-}
-
-// AGREGAR AL HUERTO
-function agregar(nombre, riego){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    function eliminar(index){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    huerto.splice(index, 1);
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-    }
-
-    huerto.push({
-        nombre: nombre,
-        riego: riego,
-        fecha: new Date().getDate()
-    });
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-// MOSTRAR HUERTO
-function mostrarHuerto(){
-    let div = document.getElementById("huerto");
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    div.innerHTML = "";
-
-    huerto.forEach(p => {
-        let hoy = new Date().getDate();
-        let toca = (hoy - p.fecha) % p.riego === 0;
-
-        div.innerHTML += `
-        <p>${p.nombre} ${toca ? "💧 Hoy regar" : "OK"}</p>
-        `;
-    });
-}
-
-// CARGA INICIAL
-window.onload = function(){
-    let nombre = localStorage.getItem("nombre");
-    let ubicacion = localStorage.getItem("ubicacion");
-
-    if(nombre){
-        document.getElementById("saludo").innerText =
-        "Hola " + nombre + " desde " + ubicacion;
-    }
-
-    function mostrarCatalogo(){
-    let div = document.getElementById("catalogo");
-    div.innerHTML = "";
-
-    plantas.forEach(p => {
-        div.innerHTML += `
-        <div class="cultivo">
-            <h3>${p.nombre}</h3>
-            <p><b>Riego:</b> ${p.riego}</p>
-            <p><b>Sol:</b> ${p.sol}</p>
-            <p><b>Tierra:</b> ${p.tierra}</p>
-            <p><b>Composta:</b> ${p.composta}</p>
-            <p><b>Germinación:</b> ${p.germinacion}</p>
-
-            <button onclick="agregar('${p.nombre}', '${p.riego}')">
+            <button onclick='agregar(${JSON.stringify(p)})'>
                 Agregar al huerto
             </button>
         </div>
         `;
     });
-    
+}
+
+function agregar(planta){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    huerto.push({
+        ...planta,
+        fecha: new Date().getDate()
+    });
+
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
+
+function eliminar(index){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+    huerto.splice(index, 1);
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
+
+function mostrarHuerto(){
+    let div = document.getElementById("huerto");
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    div.innerHTML = "";
+
+    huerto.forEach((p, index) => {
+        div.innerHTML += `
+        <div class="cultivo">
+            <h3>${p.nombre}</h3>
+            <p>🌞 ${p.sol}</p>
+            <p🌱 ${p.tierra}</p>
+            <p>♻️ ${p.composta}</p>
+            <p>⏳ ${p.germinacion}</p>
+
+            <button onclick="eliminar(${index})">Eliminar</button>
+        </div>
+        `;
+    });
+}
+
+window.onload = function(){
+    let nombre = localStorage.getItem("nombre");
+    let ubicacion = localStorage.getItem("ubicacion");
+
+    if(nombre){
+        document.getElementById("saludo").innerText =
+        "Hola " + nombre + " desde " + ubicacion;
+    }
+
+    mostrarCatalogo();
     mostrarHuerto();
 }
 
