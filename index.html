@@ -590,6 +590,52 @@ function mostrarCatalogo(){
 
         div.innerHTML += `
         <div class="cultivo">
+
+            <h3>🌿 ${p.nombre}</h3>
+            <p><b>Tipo:</b> ${p.tipo}</p>
+
+            <hr>
+
+            <h4>💧 Riego</h4>
+            <p>Frecuencia: ${p.riego.frecuencia}</p>
+            <p>Método: ${p.riego.metodo}</p>
+            <p>Sensibilidad: ${p.riego.sensibilidad}</p>
+
+            <h4>☀️ Luz</h4>
+            <p>Horas diarias: ${p.luz.horas}</p>
+            <p>Intensidad: ${p.luz.intensidad}</p>
+
+            <h4>🌱 Suelo</h4>
+            <p>Tipo: ${p.suelo.tipo}</p>
+            <p>pH: ${p.suelo.ph}</p>
+            <p>Drenaje: ${p.suelo.drenaje}</p>
+
+            <h4>🌾 Siembra</h4>
+            <p>Profundidad: ${p.siembra.profundidad_cm} cm</p>
+            <p>Temporada: ${p.siembra.temporada}</p>
+            <p>Distancia: ${p.siembra.distancia_cm} cm</p>
+
+            <h4>⏳ Germinación</h4>
+            <p>Días: ${p.germinacion.dias}</p>
+            <p>Condiciones: ${p.germinacion.condiciones}</p>
+
+            <button onclick="agregar(${index})">
+                Agregar al huerto
+            </button>
+
+        </div>
+        `;
+    });
+}
+
+    div.innerHTML = "";
+
+    plantas
+    .filter(p => p.nombre.toLowerCase().includes(filtro))
+    .forEach((p, index) => {
+
+        div.innerHTML += `
+        <div class="cultivo">
             <h3>${p.nombre} (${p.tipo})</h3>
             <p>💧 ${p.riego}</p>
             <p>☀️ ${p.sol}</p>
