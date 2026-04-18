@@ -1,40 +1,121 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Cuidado de Cultivos</title>
+<script>
 
-<style>
-body {
-    font-family: Arial;
-    background-color: #f0f8f5;
-}
-h1 {
-    color: green;
-}
-.seccion {
-    background: white;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 10px;
-}
-.cultivo {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px;
-    background: white;
-}
-button {
-    margin-top: 5px;
-}
-</style>
-</head>
+// LISTA DE CULTIVOS
+const plantas = [
+{nombre:"Maíz", riego:3},
+{nombre:"Frijol", riego:3},
+{nombre:"Sorgo", riego:4},
+{nombre:"Trigo", riego:3},
+{nombre:"Arroz", riego:2},
+{nombre:"Aguacate", riego:5},
+{nombre:"Mango", riego:5},
+{nombre:"Plátano", riego:2},
+{nombre:"Naranja", riego:4},
+{nombre:"Limón", riego:4},
+{nombre:"Jitomate", riego:2},
+{nombre:"Cebolla", riego:3},
+{nombre:"Chile", riego:3},
+{nombre:"Lechuga", riego:2},
+{nombre:"Zanahoria", riego:3},
+{nombre:"Caña de azúcar", riego:2},
+{nombre:"Café", riego:4},
+{nombre:"Cacao", riego:3},
+{nombre:"Algodón", riego:4},
+{nombre:"Aloe vera", riego:7},
+{nombre:"Alfalfa", riego:3},
+{nombre:"Agave", riego:7},
+{nombre:"Papaya", riego:3},
+{nombre:"Sandía", riego:2},
+{nombre:"Calabaza", riego:3}
+];
 
-<body>
+// PERFIL
+function guardarPerfil(){
+    let nombre = document.getElementById("nombre").value;
+    let ubicacion = document.getElementById("ubicacion").value;
 
-<h1>🌱 Mi Huerto Inteligente</h1>
+    localStorage.setItem("nombre", nombre);
+    localStorage.setItem("ubicacion", ubicacion);
 
-<!-- PERFIL -->
+    document.getElementById("saludo").innerText =
+    "Hola " + nombre + " desde " + ubicacion;
+}
+
+// CATALOGO
+function mostrarCatalogo(){
+    let div = document.getElementById("catalogo");
+    div.innerHTML = "";
+
+    plantas.forEach(p => {
+        div.innerHTML += `
+        <div class="cultivo">
+            <h3>${p.nombre}</h3>
+            <p>Riego cada ${p.riego} días</p>
+            <button onclick="agregar('${p.nombre}', ${p.riego})">Agregar al huerto</button>
+        </div>
+        `;
+    });
+}
+
+// AGREGAR
+function agregar(nombre, riego){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    huerto.push({
+        nombre: nombre,
+        riego: riego,
+        fecha: new Date().getDate()
+    });
+
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
+
+// ELIMINAR
+function eliminar(index){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    huerto.splice(index, 1);
+
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
+
+// HUERTO
+function mostrarHuerto(){
+    let div = document.getElementById("huerto");
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    div.innerHTML = "";
+
+    huerto.forEach((p, index) => {
+        let hoy = new Date().getDate();
+        let toca = (hoy - p.fecha) % p.riego === 0;
+
+        div.innerHTML += `
+        <div>
+            <p>${p.nombre} ${toca ? "💧 Hoy regar" : "OK"}</p>
+            <button onclick="eliminar(${index})">Eliminar</button>
+        </div>
+        `;
+    });
+}
+
+// INICIO
+window.onload = function(){
+    let nombre = localStorage.getItem("nombre");
+    let ubicacion = localStorage.getItem("ubicacion");
+
+    if(nombre){
+        document.getElementById("saludo").innerText =
+        "Hola " + nombre + " desde " + ubicacion;
+    }
+
+    mostrarCatalogo();
+    mostrarHuerto();
+}
+
+</script><!-- PERFIL -->
 <div class="seccion">
 <h2>Perfil</h2>
 <input id="nombre" placeholder="Nombre">
