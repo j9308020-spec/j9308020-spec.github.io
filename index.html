@@ -75,7 +75,7 @@ function mostrarCatalogo(){
             <p>Composta: ${p.composta}</p>
             <p>Germinación: ${p.germinacion}</p>
 
-            <button onclick='agregar(${JSON.stringify(p)})'>
+            <button onclick="agregar(${index})">
                 Agregar al huerto
             </button>
         </div>
@@ -83,12 +83,12 @@ function mostrarCatalogo(){
     });
 }
 
-function agregar(planta){
+function agregar(index){
     let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
 
     huerto.push({
-        ...planta,
-        fecha: new Date().getDate()
+        ...plantas[index],
+        fecha: new Date().toLocaleDateString()
     });
 
     localStorage.setItem("huerto", JSON.stringify(huerto));
@@ -116,6 +116,7 @@ function mostrarHuerto(){
             <p>🌱 ${p.tierra}</p>
             <p>♻️ ${p.composta}</p>
             <p>⏳ ${p.germinacion}</p>
+            <p>📅 ${p.fecha}</p>
 
             <button onclick="eliminar(${index})">Eliminar</button>
         </div>
