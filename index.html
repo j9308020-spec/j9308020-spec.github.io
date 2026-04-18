@@ -10,6 +10,11 @@ h1 { color: green; }
 .seccion { background: white; padding: 10px; margin: 10px; border-radius: 10px; }
 .cultivo { border: 1px solid #ccc; padding: 10px; margin: 10px; background: white; }
 button { margin-top: 5px; }
+
+input {
+    padding: 5px;
+    margin: 5px;
+}
 </style>
 </head>
 
@@ -31,6 +36,9 @@ button { margin-top: 5px; }
 </div>
 
 <h2 style="margin-left:10px;">Catálogo de Cultivos</h2>
+
+<input id="busqueda" placeholder="Buscar cultivo..." onkeyup="mostrarCatalogo()">
+
 <div id="catalogo"></div>
 
 <script>
@@ -48,12 +56,11 @@ const plantas = [
 { nombre:"Manzana", tipo:"Fruta", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"2–4 semanas" },
 { nombre:"Sandía", tipo:"Fruta", riego:"Abundante", sol:"Sol", tierra:"Arenosa", composta:"Alta", germinacion:"4–8 días" },
 
-{ nombre:"Café", tipo:"Arbol", riego:"Regular", sol:"Sombra", tierra:"Ácida", composta:"Alta", germinacion:"30–60 días" },
-{ nombre:"Cacao", tipo:"Arbol", riego:"Constante", sol:"Sombra", tierra:"Húmeda", composta:"Alta", germinacion:"7–21 días" },
+{ nombre:"Café", tipo:"Árbol", riego:"Regular", sol:"Sombra", tierra:"Ácida", composta:"Alta", germinacion:"30–60 días" },
+{ nombre:"Cacao", tipo:"Árbol", riego:"Constante", sol:"Sombra", tierra:"Húmeda", composta:"Alta", germinacion:"7–21 días" },
 
 { nombre:"Agave", tipo:"Resistente", riego:"Bajo", sol:"Sol", tierra:"Arenosa", composta:"Baja", germinacion:"2–4 semanas" }
 ];
-
 
 function guardarPerfil(){
     let nombre = document.getElementById("nombre").value;
@@ -68,17 +75,22 @@ function guardarPerfil(){
 
 function mostrarCatalogo(){
     let div = document.getElementById("catalogo");
+    let filtro = document.getElementById("busqueda").value.toLowerCase();
+
     div.innerHTML = "";
 
-    plantas.forEach((p, index) => {
+    plantas
+    .filter(p => p.nombre.toLowerCase().includes(filtro))
+    .forEach((p, index) => {
+
         div.innerHTML += `
         <div class="cultivo">
-            <h3>${p.nombre}</h3>
-            <p>💧 Riego: ${p.riego}</p>
-            <p>☀️ Sol: ${p.sol}</p>
-            <p>🌱 Tierra: ${p.tierra}</p>
-            <p>♻️ Composta: ${p.composta}</p>
-            <p>⏳ Germinación: ${p.germinacion}</p>
+            <h3>${p.nombre} (${p.tipo})</h3>
+            <p>💧 ${p.riego}</p>
+            <p>☀️ ${p.sol}</p>
+            <p>🌱 ${p.tierra}</p>
+            <p>♻️ ${p.composta}</p>
+            <p>⏳ ${p.germinacion}</p>
 
             <button onclick="agregar(${index})">
                 Agregar al huerto
@@ -103,7 +115,9 @@ function agregar(index){
 
 function eliminar(id){
     let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
     huerto = huerto.filter(p => p.id !== id);
+
     localStorage.setItem("huerto", JSON.stringify(huerto));
     mostrarHuerto();
 }
@@ -140,33 +154,7 @@ window.onload = function(){
         "Hola " + nombre + " desde " + ubicacion;
     }
 
-    function mostrarCatalogo(){
-    let div = document.getElementById("catalogo");
-    let filtro = document.getElementById("busqueda").value.toLowerCase();
-
-    div.innerHTML = "";
-
-    plantas
-    .filter(p => p.nombre.toLowerCase().includes(filtro))
-    .forEach((p, index) => {
-
-        div.innerHTML += `
-        <div class="cultivo">
-            <h3>${p.nombre} (${p.tipo})</h3>
-            <p>💧 ${p.riego}</p>
-            <p>☀️ ${p.sol}</p>
-            <p>🌱 ${p.tierra}</p>
-            <p>♻️ ${p.composta}</p>
-            <p>⏳ ${p.germinacion}</p>
-
-            <button onclick="agregar(${index})">
-                Agregar al huerto
-            </button>
-        </div>
-        `;
-    });
-    }
-    
+    mostrarCatalogo();
     mostrarHuerto();
 }
 
