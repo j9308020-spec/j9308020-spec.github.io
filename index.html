@@ -1,251 +1,164 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cuidado de Cosechas</title>
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f0f8f5;
-        }
-        h1 {
-            color: green;
-        }
-        .cultivo {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px;
-            background: white;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Cuidado de Cultivos</title>
+
+<style>
+body {
+    font-family: Arial;
+    background-color: #f0f8f5;
+}
+h1 {
+    color: green;
+}
+.seccion {
+    background: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+}
+.cultivo {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    background: white;
+}
+button {
+    margin-top: 5px;
+}
+</style>
 </head>
+
 <body>
 
-<h1>Cuidado de Cultivos</h1>
+<h1>🌱 Mi Huerto Inteligente</h1>
 
-<div class="cultivo">
-    <h2>Maíz</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Fértil y bien drenada</p>
-    <p><b>Composta:</b> Orgánica recomendada</p>
-    <p><b>Germinación:</b> 5-7 días</p>
+<!-- PERFIL -->
+<div class="seccion">
+<h2>Perfil</h2>
+<input id="nombre" placeholder="Nombre">
+<input id="ubicacion" placeholder="Ubicación">
+<button onclick="guardarPerfil()">Guardar</button>
+<p id="saludo"></p>
 </div>
 
-<div class="cultivo">
-    <h2>Frijol</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Suelta</p>
-    <p><b>Composta:</b> Ligera</p>
-    <p><b>Germinación:</b> 7-10 días</p>
+<!-- MI HUERTO -->
+<div class="seccion">
+<h2>Mi Huerto</h2>
+<div id="huerto"></div>
 </div>
 
-<div class="cultivo">
-    <h2>Sorgo</h2>
-    <p><b>Riego:</b> Bajo</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Resistente a sequía</p>
-    <p><b>Composta:</b> Opcional</p>
-    <p><b>Germinación:</b> 4-6 días</p>
-</div>
+<!-- CATALOGO -->
+<h2 style="margin-left:10px;">Catálogo de Cultivos</h2>
 
-<div class="cultivo">
-    <h2>Trigo</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Fértil y bien drenada</p>
-    <p><b>Composta:</b> Recomendada</p>
-    <p><b>Germinación:</b> 7-10 días</p>
-</div>
+<div id="catalogo"></div>
 
-<div class="cultivo">
-    <h2>Arroz</h2>
-    <p><b>Riego:</b> Alto (requiere mucha agua)</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Arcillosa</p>
-    <p><b>Composta:</b> Orgánica</p>
-    <p><b>Germinación:</b> 5-7 días</p>
-</div>
+<script>
 
-<div class="cultivo">
-    <h2>Aguacate</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Bien drenada</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 2-6 semanas</p>
-</div>
+// LISTA DE CULTIVOS (tus 25)
+const plantas = [
+{nombre:"Maíz", riego:3},
+{nombre:"Frijol", riego:3},
+{nombre:"Sorgo", riego:4},
+{nombre:"Trigo", riego:3},
+{nombre:"Arroz", riego:2},
+{nombre:"Aguacate", riego:5},
+{nombre:"Mango", riego:5},
+{nombre:"Plátano", riego:2},
+{nombre:"Naranja", riego:4},
+{nombre:"Limón", riego:4},
+{nombre:"Jitomate", riego:2},
+{nombre:"Cebolla", riego:3},
+{nombre:"Chile", riego:3},
+{nombre:"Lechuga", riego:2},
+{nombre:"Zanahoria", riego:3},
+{nombre:"Caña de azúcar", riego:2},
+{nombre:"Café", riego:4},
+{nombre:"Cacao", riego:3},
+{nombre:"Algodón", riego:4},
+{nombre:"Aloe vera", riego:7},
+{nombre:"Alfalfa", riego:3},
+{nombre:"Agave", riego:7},
+{nombre:"Papaya", riego:3},
+{nombre:"Sandía", riego:2},
+{nombre:"Calabaza", riego:3}
+];
 
-<div class="cultivo">
-    <h2>Mango</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Arenosa</p>
-    <p><b>Composta:</b> Opcional</p>
-    <p><b>Germinación:</b> 2-3 semanas</p>
-</div>
+// PERFIL
+function guardarPerfil(){
+    let nombre = document.getElementById("nombre").value;
+    let ubicacion = document.getElementById("ubicacion").value;
 
-<div class="cultivo">
-    <h2>Plátano</h2>
-    <p><b>Riego:</b> Alto</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Rica en nutrientes</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> No aplica (se reproduce por hijuelos)</p>
-</div>
+    localStorage.setItem("nombre", nombre);
+    localStorage.setItem("ubicacion", ubicacion);
 
-<div class="cultivo">
-    <h2>Naranja</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Fértil</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 2-4 semanas</p>
-</div>
+    document.getElementById("saludo").innerText =
+    "Hola " + nombre + " desde " + ubicacion;
+}
 
-<div class="cultivo">
-    <h2>Limón</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Bien drenada</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 2-3 semanas</p>
-</div>
+// MOSTRAR CATALOGO
+function mostrarCatalogo(){
+    let div = document.getElementById("catalogo");
+    div.innerHTML = "";
 
-<div class="cultivo">
-    <h2>Jitomate</h2>
-    <p><b>Riego:</b> Frecuente</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Rica y suelta</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 5-10 días</p>
-</div>
+    plantas.forEach(p => {
+        div.innerHTML += `
+        <div class="cultivo">
+            <h3>${p.nombre}</h3>
+            <p>Riego cada ${p.riego} días</p>
+            <button onclick="agregar('${p.nombre}', ${p.riego})">Agregar al huerto</button>
+        </div>
+        `;
+    });
+}
 
-<div class="cultivo">
-    <h2>Cebolla</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Suelta</p>
-    <p><b>Composta:</b> Ligera</p>
-    <p><b>Germinación:</b> 7-12 días</p>
-</div>
+// AGREGAR AL HUERTO
+function agregar(nombre, riego){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
 
-<div class="cultivo">
-    <h2>Chile</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Fértil</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 7-14 días</p>
-</div>
+    huerto.push({
+        nombre: nombre,
+        riego: riego,
+        fecha: new Date().getDate()
+    });
 
-<div class="cultivo">
-    <h2>Lechuga</h2>
-    <p><b>Riego:</b> Frecuente</p>
-    <p><b>Sol:</b> Parcial</p>
-    <p><b>Tierra:</b> Húmeda y suelta</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 5-10 días</p>
-</div>
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
 
-<div class="cultivo">
-    <h2>Zanahoria</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Suelta y profunda</p>
-    <p><b>Composta:</b> Ligera</p>
-    <p><b>Germinación:</b> 10-20 días</p>
-</div>
+// MOSTRAR HUERTO
+function mostrarHuerto(){
+    let div = document.getElementById("huerto");
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
 
-<div class="cultivo">
-    <h2>Caña de azúcar</h2>
-    <p><b>Riego:</b> Alto</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Fértil</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> No aplica (se reproduce por tallos)</p>
-</div>
+    div.innerHTML = "";
 
-<div class="cultivo">
-    <h2>Café</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Parcial</p>
-    <p><b>Tierra:</b> Ácida y fértil</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 30-60 días</p>
-</div>
+    huerto.forEach(p => {
+        let hoy = new Date().getDate();
+        let toca = (hoy - p.fecha) % p.riego === 0;
 
-<div class="cultivo">
-    <h2>Cacao</h2>
-    <p><b>Riego:</b> Alto</p>
-    <p><b>Sol:</b> Parcial</p>
-    <p><b>Tierra:</b> Húmeda y rica</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 10-20 días</p>
-</div>
+        div.innerHTML += `
+        <p>${p.nombre} ${toca ? "💧 Hoy regar" : "OK"}</p>
+        `;
+    });
+}
 
-<div class="cultivo">
-    <h2>Algodón</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Bien drenada</p>
-    <p><b>Composta:</b> Opcional</p>
-    <p><b>Germinación:</b> 7-14 días</p>
-</div>
+// CARGA INICIAL
+window.onload = function(){
+    let nombre = localStorage.getItem("nombre");
+    let ubicacion = localStorage.getItem("ubicacion");
 
-<div class="cultivo">
-    <h2>Aloe vera</h2>
-    <p><b>Riego:</b> Bajo</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Arenosa</p>
-    <p><b>Composta:</b> No necesaria</p>
-    <p><b>Germinación:</b> No aplica (se reproduce por brotes)</p>
-</div>
+    if(nombre){
+        document.getElementById("saludo").innerText =
+        "Hola " + nombre + " desde " + ubicacion;
+    }
 
-<div class="cultivo">
-    <h2>Alfalfa</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Fértil</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 5-10 días</p>
-</div>
+    mostrarCatalogo();
+    mostrarHuerto();
+}
 
-<div class="cultivo">
-    <h2>Agave</h2>
-    <p><b>Riego:</b> Bajo</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Arenosa</p>
-    <p><b>Composta:</b> No necesaria</p>
-    <p><b>Germinación:</b> No aplica (crecimiento lento por hijuelos)</p>
-</div>
-
-<div class="cultivo">
-    <h2>Papaya</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Bien drenada</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 10-15 días</p>
-</div>
-
-<div class="cultivo">
-    <h2>Sandía</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Arenosa</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 5-10 días</p>
-</div>
-
-<div class="cultivo">
-    <h2>Calabaza</h2>
-    <p><b>Riego:</b> Moderado</p>
-    <p><b>Sol:</b> Alto</p>
-    <p><b>Tierra:</b> Fértil</p>
-    <p><b>Composta:</b> Sí</p>
-    <p><b>Germinación:</b> 5-10 días</p>
-</div>
+</script>
 
 </body>
 </html>
