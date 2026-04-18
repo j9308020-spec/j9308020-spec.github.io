@@ -117,6 +117,15 @@ function mostrarCatalogo(){
 function agregar(nombre, riego){
     let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
 
+    function eliminar(index){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    huerto.splice(index, 1);
+
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+    }
+
     huerto.push({
         nombre: nombre,
         riego: riego,
