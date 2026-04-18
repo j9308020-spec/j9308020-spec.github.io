@@ -1,6 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cuidado de Cultivos</title>
+
+<style>
+body {
+    font-family: Arial;
+    background-color: #f0f8f5;
+}
+
+h1 {
+    color: green;
+}
+
+.seccion {
+    background: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.cultivo {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    background: white;
+}
+
+button {
+    margin-top: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🌱 Mi Huerto Inteligente</h1>
+
+<div class="seccion">
+<h2>Perfil</h2>
+<input id="nombre" placeholder="Nombre">
+<input id="ubicacion" placeholder="Ubicación">
+<button onclick="guardarPerfil()">Guardar</button>
+<p id="saludo"></p>
+</div>
+
+<div class="seccion">
+<h2>Mi Huerto</h2>
+<div id="huerto"></div>
+</div>
+
+<h2 style="margin-left:10px;">Catálogo de Cultivos</h2>
+<div id="catalogo"></div>
+
 <script>
 
-// LISTA DE CULTIVOS
 const plantas = [
 {nombre:"Maíz", riego:3},
 {nombre:"Frijol", riego:3},
@@ -29,7 +84,6 @@ const plantas = [
 {nombre:"Calabaza", riego:3}
 ];
 
-// PERFIL
 function guardarPerfil(){
     let nombre = document.getElementById("nombre").value;
     let ubicacion = document.getElementById("ubicacion").value;
@@ -41,7 +95,6 @@ function guardarPerfil(){
     "Hola " + nombre + " desde " + ubicacion;
 }
 
-// CATALOGO
 function mostrarCatalogo(){
     let div = document.getElementById("catalogo");
     div.innerHTML = "";
@@ -57,8 +110,64 @@ function mostrarCatalogo(){
     });
 }
 
-// AGREGAR
 function agregar(nombre, riego){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    huerto.push({
+        nombre: nombre,
+        riego: riego,
+        fecha: new Date().getDate()
+    });
+
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
+
+function eliminar(index){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    huerto.splice(index, 1);
+
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
+
+function mostrarHuerto(){
+    let div = document.getElementById("huerto");
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    div.innerHTML = "";
+
+    huerto.forEach((p, index) => {
+        let hoy = new Date().getDate();
+        let toca = (hoy - p.fecha) % p.riego === 0;
+
+        div.innerHTML += `
+        <div>
+            <p>${p.nombre} ${toca ? "💧 Hoy regar" : "OK"}</p>
+            <button onclick="eliminar(${index})">Eliminar</button>
+        </div>
+        `;
+    });
+}
+
+window.onload = function(){
+    let nombre = localStorage.getItem("nombre");
+    let ubicacion = localStorage.getItem("ubicacion");
+
+    if(nombre){
+        document.getElementById("saludo").innerText =
+        "Hola " + nombre + " desde " + ubicacion;
+    }
+
+    mostrarCatalogo();
+    mostrarHuerto();
+}
+
+</script>
+
+</body>
+</html>function agregar(nombre, riego){
     let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
 
     huerto.push({
