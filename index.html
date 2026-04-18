@@ -57,31 +57,118 @@ button {
 <script>
 
 const plantas = [
-{nombre:"Maíz", riego:3},
-{nombre:"Frijol", riego:3},
-{nombre:"Sorgo", riego:4},
-{nombre:"Trigo", riego:3},
-{nombre:"Arroz", riego:2},
-{nombre:"Aguacate", riego:5},
-{nombre:"Mango", riego:5},
-{nombre:"Plátano", riego:2},
-{nombre:"Naranja", riego:4},
-{nombre:"Limón", riego:4},
-{nombre:"Jitomate", riego:2},
-{nombre:"Cebolla", riego:3},
-{nombre:"Chile", riego:3},
-{nombre:"Lechuga", riego:2},
-{nombre:"Zanahoria", riego:3},
-{nombre:"Caña de azúcar", riego:2},
-{nombre:"Café", riego:4},
-{nombre:"Cacao", riego:3},
-{nombre:"Algodón", riego:4},
-{nombre:"Aloe vera", riego:7},
-{nombre:"Alfalfa", riego:3},
-{nombre:"Agave", riego:7},
-{nombre:"Papaya", riego:3},
-{nombre:"Sandía", riego:2},
-{nombre:"Calabaza", riego:3}
+{
+nombre:"Lechuga",
+riego:"Frecuente",
+sol:"4–6 horas, semisombra",
+tierra:"Suelta y fértil",
+composta:"Alta",
+germinacion:"5–10 días"
+},
+{
+nombre:"Zanahoria",
+riego:"Moderado",
+sol:"6–8 horas sol",
+tierra:"Suelta y profunda",
+composta:"Media",
+germinacion:"10–20 días"
+},
+{
+nombre:"Caña de azúcar",
+riego:"Abundante",
+sol:"Pleno sol",
+tierra:"Fértil y profunda",
+composta:"Alta",
+germinacion:"7–14 días"
+},
+{
+nombre:"Café",
+riego:"Regular",
+sol:"Sombra parcial",
+tierra:"Ácida y rica",
+composta:"Alta",
+germinacion:"30–60 días"
+},
+{
+nombre:"Sorgo",
+riego:"Bajo a moderado",
+sol:"Pleno sol",
+tierra:"Suelo suelto",
+composta:"Media",
+germinacion:"5–10 días"
+},
+{
+nombre:"Limón",
+riego:"2–3 veces por semana",
+sol:"6–8 horas sol",
+tierra:"Suelta y drenada",
+composta:"Alta",
+germinacion:"10–20 días"
+},
+{
+nombre:"Aguacate",
+riego:"2–3 veces por semana",
+sol:"Pleno sol",
+tierra:"Bien drenada",
+composta:"Alta",
+germinacion:"2–6 semanas"
+},
+{
+nombre:"Calabaza",
+riego:"Constante",
+sol:"6+ horas sol",
+tierra:"Fértil",
+composta:"Alta",
+germinacion:"5–10 días"
+},
+{
+nombre:"Mango",
+riego:"Moderado",
+sol:"Pleno sol",
+tierra:"Arenosa ligera",
+composta:"Alta",
+germinacion:"2–4 semanas"
+},
+{
+nombre:"Sandía",
+riego:"Abundante",
+sol:"Mucho sol",
+tierra:"Arenosa",
+composta:"Alta",
+germinacion:"4–8 días"
+},
+{
+nombre:"Plátano",
+riego:"Abundante",
+sol:"6–8 horas sol",
+tierra:"Rica en nutrientes",
+composta:"Alta",
+germinacion:"1–3 meses"
+},
+{
+nombre:"Papaya",
+riego:"Moderado",
+sol:"Pleno sol",
+tierra:"Ligera",
+composta:"Alta",
+germinacion:"2–4 semanas"
+},
+{
+nombre:"Naranja",
+riego:"Moderado",
+sol:"Pleno sol",
+tierra:"Fértil y drenada",
+composta:"Alta",
+germinacion:"2–6 semanas"
+},
+{
+nombre:"Agave",
+riego:"Muy bajo",
+sol:"Pleno sol",
+tierra:"Arenosa",
+composta:"Baja",
+germinacion:"2–4 semanas"
+}
 ];
 
 function guardarPerfil(){
@@ -353,7 +440,27 @@ window.onload = function(){
         "Hola " + nombre + " desde " + ubicacion;
     }
 
-    mostrarCatalogo();
+    function mostrarCatalogo(){
+    let div = document.getElementById("catalogo");
+    div.innerHTML = "";
+
+    plantas.forEach(p => {
+        div.innerHTML += `
+        <div class="cultivo">
+            <h3>${p.nombre}</h3>
+            <p><b>Riego:</b> ${p.riego}</p>
+            <p><b>Sol:</b> ${p.sol}</p>
+            <p><b>Tierra:</b> ${p.tierra}</p>
+            <p><b>Composta:</b> ${p.composta}</p>
+            <p><b>Germinación:</b> ${p.germinacion}</p>
+
+            <button onclick="agregar('${p.nombre}', '${p.riego}')">
+                Agregar al huerto
+            </button>
+        </div>
+        `;
+    });
+    
     mostrarHuerto();
 }
 
