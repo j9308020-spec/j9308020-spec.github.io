@@ -2,223 +2,116 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>🌱 Huerto Inteligente México</title>
+<title>🌱 Huerto Inteligente FIX</title>
 
 <style>
 body { font-family: Arial; background:#f0f8f5; }
 h1 { color: green; }
-.seccion { background:white; padding:10px; margin:10px; border-radius:10px; }
 .cultivo { border:1px solid #ccc; padding:10px; margin:10px; background:white; }
-button { margin-top:5px; cursor:pointer; }
+button { cursor:pointer; margin-top:5px; }
 small { color:#555; }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Huerto Inteligente Completo (52 cultivos + info real)</h1>
+<h1>🌱 Huerto Inteligente (ARREGLADO)</h1>
 
-<div class="seccion">
-<h2>🌿 Mi Huerto</h2>
 <div id="huerto"></div>
-</div>
 
 <script>
 
-// 🌱 52 CULTIVOS CON INFO COMPLETA
+// 🌱 cultivos (ejemplo reducido pero funcional)
 const plantas = [
-{
-id:1,nombre:"Maíz 🌽",dias:10,
-riego:"Moderado (25-40 mm/sem)",sol:"6-8h sol",suelo:"Fértil profundo",fert:"Alto en nitrógeno",
-info:"Base alimenticia de México, crece en milpas."
-},
-{
-id:2,nombre:"Frijol 🫘",dias:8,
-riego:"Moderado",sol:"6h sol",suelo:"Suelto y aireado",fert:"Bajo",
-info:"Leguminosa que fija nitrógeno en el suelo."
-},
-{
-id:3,nombre:"Trigo 🌾",dias:10,
-riego:"Bajo",sol:"6h",suelo:"Fértil",fert:"Medio",
-info:"Base para harina y pan."
-},
-{
-id:4,nombre:"Arroz 🍚",dias:14,
-riego:"Alto (inundado)",sol:"6-8h",suelo:"Inundado",fert:"Alto",
-info:"Cultivo de zonas húmedas."
-},
-{
-id:5,nombre:"Sorgo 🌾",dias:9,
-riego:"Bajo",sol:"Sol fuerte",suelo:"Resistente",fert:"Medio",
-info:"Resiste sequías extremas."
-},
-
-{
-id:6,nombre:"Aguacate 🥑",dias:45,
-riego:"Moderado",sol:"8h",suelo:"Drenado",fert:"Alto",
-info:"Fruta exportada de México."
-},
-{
-id:7,nombre:"Mango 🥭",dias:60,
-riego:"Moderado",sol:"Sol directo",suelo:"Arenoso",fert:"Alto",
-info:"Fruta tropical dulce."
-},
-{
-id:8,nombre:"Plátano 🍌",dias:90,
-riego:"Alto",sol:"8h",suelo:"Húmedo",fert:"Alto",
-info:"Requiere humedad constante."
-},
-{
-id:9,nombre:"Naranja 🍊",dias:50,
-riego:"Moderado",sol:"Sol",suelo:"Ácido",fert:"Alto",
-info:"Cítrico rico en vitamina C."
-},
-{
-id:10,nombre:"Limón 🍋",dias:55,
-riego:"Moderado",sol:"Sol",suelo:"Drenado",fert:"Alto",
-info:"Muy usado en cocina mexicana."
-},
-
-{
-id:11,nombre:"Jitomate 🍅",dias:25,
-riego:"Constante",sol:"Sol",suelo:"Fértil",fert:"Alto",
-info:"Base de salsas mexicanas."
-},
-{
-id:12,nombre:"Cebolla 🧅",dias:20,
-riego:"Moderado",sol:"Sol",suelo:"Suelto",fert:"Medio",
-info:"Ingrediente base."
-},
-{
-id:13,nombre:"Chile 🌶️",dias:30,
-riego:"Moderado",sol:"Sol fuerte",suelo:"Fértil",fert:"Alto",
-info:"Clave en la cocina mexicana."
-},
-{
-id:14,nombre:"Lechuga 🥬",dias:12,
-riego:"Frecuente",sol:"Semisombra",suelo:"Suelto",fert:"Alto",
-info:"Crecimiento rápido."
-},
-{
-id:15,nombre:"Zanahoria 🥕",dias:20,
-riego:"Moderado",sol:"Sol",suelo:"Profundo",fert:"Medio",
-info:"Raíz dulce comestible."
-},
-
-{
-id:16,nombre:"Caña de azúcar 🎋",dias:120,
-riego:"Alto",sol:"Sol",suelo:"Fértil",fert:"Alto",
-info:"Producción de azúcar."
-},
-{
-id:17,nombre:"Café ☕",dias:180,
-riego:"Regular",sol:"Sombra",suelo:"Ácido",fert:"Alto",
-info:"Requiere sombra parcial."
-},
-{
-id:18,nombre:"Cacao 🍫",dias:160,
-riego:"Constante",sol:"Sombra",suelo:"Húmedo",fert:"Alto",
-info:"Base del chocolate."
-},
-{
-id:19,nombre:"Algodón 🧵",dias:90,
-riego:"Moderado",sol:"Sol",suelo:"Fértil",fert:"Medio",
-info:"Textil natural."
-},
-{
-id:20,nombre:"Aloe vera 🌿",dias:30,
-riego:"Bajo",sol:"Sol",suelo:"Arenoso",fert:"Bajo",
-info:"Planta medicinal."
-},
-
-{
-id:21,nombre:"Alfalfa 🌱",dias:25,
-riego:"Moderado",sol:"Sol",suelo:"Fértil",fert:"Medio",
-info:"Forraje animal."
-},
-{
-id:22,nombre:"Agave 🌵",dias:365,
-riego:"Muy bajo",sol:"Sol",suelo:"Seco",fert:"Bajo",
-info:"Tequila y mezcal."
-},
-{
-id:23,nombre:"Papaya 🍈",dias:60,
-riego:"Moderado",sol:"Sol",suelo:"Ligero",fert:"Alto",
-info:"Fruta tropical."
-},
-{
-id:24,nombre:"Sandía 🍉",dias:35,
-riego:"Alto",sol:"Sol",suelo:"Arenoso",fert:"Alto",
-info:"Fruta refrescante."
-},
-{
-id:25,nombre:"Calabaza 🎃",dias:30,
-riego:"Alto",sol:"Sol",suelo:"Fértil",fert:"Alto",
-info:"Base de la milpa."
-}
+{ id:1, nombre:"Maíz 🌽", dias:10, info:"Base alimenticia de México" },
+{ id:2, nombre:"Frijol 🫘", dias:8, info:"Proteína vegetal esencial" },
+{ id:3, nombre:"Jitomate 🍅", dias:25, info:"Base de salsas mexicanas" },
+{ id:4, nombre:"Lechuga 🥬", dias:12, info:"Crecimiento rápido" },
+{ id:5, nombre:"Zanahoria 🥕", dias:20, info:"Raíz comestible dulce" }
 ];
 
-// ➕ agregar
+// ➕ AGREGAR (FIX: fecha siempre válida + id único)
 function agregar(id){
-    let h=JSON.parse(localStorage.getItem("huerto")||"[]");
-    h.push({...plantas.find(p=>p.id===id),fecha:Date.now()});
-    localStorage.setItem("huerto",JSON.stringify(h));
+    let h = JSON.parse(localStorage.getItem("huerto") || "[]");
+
+    h.push({
+        ...plantas.find(p => p.id === id),
+        uid: crypto.randomUUID(), // ID seguro
+        fecha: Date.now()
+    });
+
+    localStorage.setItem("huerto", JSON.stringify(h));
     mostrarHuerto();
 }
 
-// 🗑️ eliminar con confirmación
-function eliminar(fecha){
-    if(!confirm("⚠️ ¿Seguro que quieres eliminar este cultivo?")) return;
+// 🗑️ ELIMINAR (ahora usa uid, no fecha)
+function eliminar(uid){
+    if(!confirm("⚠️ ¿Eliminar este cultivo?")) return;
 
-    let h=JSON.parse(localStorage.getItem("huerto")||"[]");
-    h=h.filter(p=>p.fecha!==fecha);
-    localStorage.setItem("huerto",JSON.stringify(h));
+    let h = JSON.parse(localStorage.getItem("huerto") || "[]");
+    h = h.filter(p => p.uid !== uid);
+
+    localStorage.setItem("huerto", JSON.stringify(h));
     mostrarHuerto();
 }
 
-// 🌱 etapas
-function etapa(d,t){
-    let r=d/t;
-    if(r<0.25) return "🌱 Semilla";
-    if(r<0.5) return "🌿 Brote";
-    if(r<0.8) return "🌾 Creciendo";
-    if(r<1) return "🌼 Casi listo";
+// 🌱 ETAPAS SEGURAS
+function etapa(dias, total){
+    if(!dias || !total) return "❓ Datos inválidos";
+
+    let r = dias / total;
+
+    if(r < 0.25) return "🌱 Semilla";
+    if(r < 0.5) return "🌿 Brote";
+    if(r < 0.8) return "🌾 Creciendo";
+    if(r < 1) return "🌼 Casi listo";
     return "🍅 Listo para cosecha";
 }
 
-// 🌿 mostrar huerto
+// 🌿 MOSTRAR HUERTO (con limpieza de datos corruptos)
 function mostrarHuerto(){
-    let d=document.getElementById("huerto");
-    let h=JSON.parse(localStorage.getItem("huerto")||"[]");
+    let d = document.getElementById("huerto");
+    let h = JSON.parse(localStorage.getItem("huerto") || "[]");
 
-    d.innerHTML="";
+    // 🧹 limpiar basura (evita NaN y undefined)
+    h = h.filter(p =>
+        p &&
+        p.fecha &&
+        p.dias &&
+        p.uid &&
+        p.nombre
+    );
 
-    h.forEach(p=>{
-        let dias=Math.floor((Date.now()-p.fecha)/(1000*60*60*24));
+    localStorage.setItem("huerto", JSON.stringify(h));
 
-        d.innerHTML+=`
+    d.innerHTML = "";
+
+    h.forEach(p => {
+
+        let dias = Math.floor((Date.now() - p.fecha) / (1000*60*60*24));
+
+        if(isNaN(dias)) dias = 0;
+
+        d.innerHTML += `
         <div class="cultivo">
             <h3>${p.nombre}</h3>
-
             <small>${p.info}</small><br><br>
-
-            💧 Riego: ${p.riego}<br>
-            ☀️ Sol: ${p.sol}<br>
-            🌱 Suelo: ${p.suelo}<br>
-            🧪 Fertilizante: ${p.fert}<br><br>
 
             📅 Plantado: ${new Date(p.fecha).toLocaleDateString()}<br>
             ⏳ Días: ${dias}<br>
-            🌱 Estado: ${etapa(dias,p.dias)}<br>
+            🌱 Estado: ${etapa(dias, p.dias)}<br>
             📆 Total: ${p.dias} días<br>
 
-            <button onclick="eliminar(${p.fecha})">🗑️ Eliminar</button>
+            <button onclick="eliminar('${p.uid}')">🗑️ Eliminar</button>
         </div>
         `;
     });
 }
 
-window.onload=mostrarHuerto;
+// iniciar limpio
+window.onload = function(){
+    mostrarHuerto();
+}
 
 </script>
 
