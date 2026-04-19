@@ -1,283 +1,520 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Cuidado de Cultivos</title>
-
-<style>
-body { font-family: Arial; background-color: #f0f8f5; }
-h1 { color: green; }
-
-.seccion {
-    background: white;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 10px;
-}
-
-.cultivo {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px;
-    background: white;
-    border-radius: 10px;
-}
-
-button { margin-top: 5px; }
-
-input {
-    padding: 5px;
-    margin: 5px;
-}
-</style>
-</head>
-
-<body>
-
-<h1>🌱 Mi Huerto Inteligente</h1>
-
-<div class="seccion">
-<h2>Perfil</h2>
-<input id="nombre" placeholder="Nombre">
-<input id="ubicacion" placeholder="Ubicación">
-<button onclick="guardarPerfil()">Guardar</button>
-<p id="saludo"></p>
-</div>
-
-<div class="seccion">
-<h2>Mi Huerto</h2>
-<div id="huerto"></div>
-</div>
-
-<h2 style="margin-left:10px;">Catálogo de Cultivos</h2>
-
-<input id="busqueda" placeholder="Buscar cultivo..." onkeyup="mostrarCatalogo()">
-
-<div id="catalogo"></div>
-
-<script>
-
-const plantas = [
-  // ================= GRANO =================
-  {
-    nombre: "Maíz",
-    tipo: "Grano",
-    riego: { frecuencia: "2–3 veces/semana", metodo: "goteo o surcos", sensibilidad: "no tolera encharcamiento" },
-    luz: { horas: "8–10", intensidad: "alta" },
-    suelo: { tipo: "franco-arenoso", ph: "5.8–7.0", drenaje: "bueno" },
-    siembra: { profundidad_cm: "3–5", temporada: "primavera", distancia_cm: "25–30" },
-    germinacion: { dias: "5–10", condiciones: "calor y humedad constante" }
-  },
-  {
-    nombre: "Frijol",
-    tipo: "Grano",
-    riego: { frecuencia: "2/semana", metodo: "moderado", sensibilidad: "media" },
-    luz: { horas: "6–8", intensidad: "media-alta" },
-    suelo: { tipo: "ligero", ph: "6.0–7.5", drenaje: "bueno" },
-    siembra: { profundidad_cm: "3–4", temporada: "primavera-verano", distancia_cm: "10–15" },
-    germinacion: { dias: "5–8", condiciones: "suelo cálido" }
-  },
-  {
-    nombre: "Trigo",
-    tipo: "Grano",
-    riego: { frecuencia: "1–2/semana", metodo: "ligero", sensibilidad: "baja humedad" },
-    luz: { horas: "6–8", intensidad: "media" },
-    suelo: { tipo: "franco", ph: "6.0–7.0", drenaje: "medio" },
-    siembra: { profundidad_cm: "2–3", temporada: "otoño-invierno", distancia_cm: "10–15" },
-    germinacion: { dias: "7–10", condiciones: "clima fresco" }
-  },
-  {
-    nombre: "Arroz",
-    tipo: "Grano",
-    riego: { frecuencia: "constante", metodo: "inundación controlada", sensibilidad: "alta agua" },
-    luz: { horas: "6–8", intensidad: "alta" },
-    suelo: { tipo: "arcilloso", ph: "5.5–7.0", drenaje: "bajo" },
-    siembra: { profundidad_cm: "2–4", temporada: "primavera-verano", distancia_cm: "15–20" },
-    germinacion: { dias: "7–14", condiciones: "agua constante" }
-  },
-  {
-    nombre: "Sorgo",
-    tipo: "Grano",
-    riego: { frecuencia: "baja", metodo: "resistente a sequía", sensibilidad: "muy resistente" },
-    luz: { horas: "8–10", intensidad: "alta" },
-    suelo: { tipo: "arenoso", ph: "5.5–7.5", drenaje: "alto" },
-    siembra: { profundidad_cm: "2–4", temporada: "primavera", distancia_cm: "20–30" },
-    germinacion: { dias: "7–10", condiciones: "calor seco" }
-  },
-
-  // ================= FRUTALES =================
-  {
-    nombre: "Aguacate",
-    tipo: "Fruta",
-    riego: { frecuencia: "2–3/semana", metodo: "profundo", sensibilidad: "no encharcar" },
-    luz: { horas: "6–8", intensidad: "alta" },
-    suelo: { tipo: "profundo", ph: "6.0–7.0", drenaje: "excelente" },
-    siembra: { profundidad_cm: "5–10", temporada: "primavera", distancia_cm: "300+" },
-    germinacion: { dias: "15–45", condiciones: "calor constante" }
-  },
-  {
-    nombre: "Mango",
-    tipo: "Fruta",
-    riego: { frecuencia: "moderada", metodo: "profundo", sensibilidad: "media" },
-    luz: { horas: "8–10", intensidad: "muy alta" },
-    suelo: { tipo: "arenoso", ph: "5.5–7.5", drenaje: "alto" },
-    siembra: { profundidad_cm: "5–10", temporada: "primavera-verano", distancia_cm: "400+" },
-    germinacion: { dias: "15–30", condiciones: "clima cálido" }
-  },
-  {
-    nombre: "Plátano",
-    tipo: "Fruta",
-    riego: { frecuencia: "alta", metodo: "constante", sensibilidad: "humedad alta" },
-    luz: { horas: "5–8", intensidad: "media" },
-    suelo: { tipo: "rico en materia orgánica", ph: "5.5–7.0", drenaje: "medio" },
-    siembra: { profundidad_cm: "20–30", temporada: "todo el año", distancia_cm: "300+" },
-    germinacion: { dias: "15–30", condiciones: "clima húmedo" }
-  },
-  {
-    nombre: "Naranja",
-    tipo: "Fruta",
-    riego: { frecuencia: "2–3/semana", metodo: "profundo", sensibilidad: "media" },
-    luz: { horas: "6–8", intensidad: "alta" },
-    suelo: { tipo: "fértil", ph: "6.0–7.5", drenaje: "bueno" },
-    siembra: { profundidad_cm: "5–10", temporada: "primavera", distancia_cm: "300+" },
-    germinacion: { dias: "15–30", condiciones: "templado" }
-  },
-  {
-    nombre: "Limón",
-    tipo: "Fruta",
-    riego: { frecuencia: "2–3/semana", metodo: "moderado", sensibilidad: "media" },
-    luz: { horas: "6–8", intensidad: "alta" },
-    suelo: { tipo: "fértil", ph: "5.5–7.0", drenaje: "bueno" },
-    siembra: { profundidad_cm: "5–10", temporada: "primavera", distancia_cm: "300+" },
-    germinacion: { dias: "15–30", condiciones: "cálido" }
-  },
-
-  // ================= VERDURAS =================
-  {
-    nombre: "Jitomate",
-    tipo: "Verdura",
-    riego: { frecuencia: "3–4/semana", metodo: "constante", sensibilidad: "media" },
-    luz: { horas: "6–8", intensidad: "alta" },
-    suelo: { tipo: "fértil", ph: "6.0–6.8", drenaje: "bueno" },
-    siembra: { profundidad_cm: "1–2", temporada: "primavera", distancia_cm: "30–40" },
-    germinacion: { dias: "5–10", condiciones
-
-// ================== CATÁLOGO ==================
-function mostrarCatalogo(){
-    let div = document.getElementById("catalogo");
-    let filtro = document.getElementById("busqueda").value.toLowerCase();
-
-    div.innerHTML = "";
-
-    plantas
-    .filter(p => p.nombre.toLowerCase().includes(filtro))
-    .forEach((p, index) => {
-
-        div.innerHTML += `
-        <div class="cultivo">
-
-            <h3>🌿 ${p.nombre}</h3>
-            <p><b>Tipo:</b> ${p.tipo}</p>
-
-            <p>💧 ${p.riego.frecuencia}</p>
-            <p>🚿 ${p.riego.metodo}</p>
-
-            <p>☀️ ${p.luz.horas}h (${p.luz.intensidad})</p>
-
-            <p>🌱 Suelo: ${p.suelo.tipo} | pH ${p.suelo.ph}</p>
-
-            <p>⏳ Germinación: ${p.germinacion.dias} días</p>
-
-            <button onclick="agregar(${index})">
-                Agregar al huerto
-            </button>
-
-        </div>
-        `;
-    });
-}
-
-// ================== AGREGAR ==================
-function agregar(index){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    huerto.push({
-        ...plantas[index],
-        id: Date.now(),
-        fecha: new Date().toLocaleDateString()
-    });
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-// ================== HUERTO ==================
-function mostrarHuerto(){
-    let div = document.getElementById("huerto");
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    div.innerHTML = "";
-
-    huerto.forEach(p => {
-
-        div.innerHTML += `
-        <div class="cultivo">
-
-            <h3>🌿 ${p.nombre}</h3>
-            <p>${p.tipo}</p>
-
-            <p>💧 ${p.riego.frecuencia}</p>
-            <p>☀️ ${p.luz.horas}h</p>
-            <p>🌱 ${p.suelo.tipo}</p>
-
-            <p>📅 ${p.fecha}</p>
-
-            <button onclick="eliminar(${p.id})">
-                Eliminar
-            </button>
-
-        </div>
-        `;
-    });
-}
-
-// ================== ELIMINAR ==================
-function eliminar(id){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
-
-    huerto = huerto.filter(p => p.id !== id);
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-// ================== PERFIL ==================
-function guardarPerfil(){
-    let nombre = document.getElementById("nombre").value;
-    let ubicacion = document.getElementById("ubicacion").value;
-
-    localStorage.setItem("nombre", nombre);
-    localStorage.setItem("ubicacion", ubicacion);
-
-    document.getElementById("saludo").innerText =
-    "Hola " + nombre + " desde " + ubicacion;
-}
-
-// ================== INICIO ==================
-window.onload = function(){
-    mostrarCatalogo();
-    mostrarHuerto();
-
-    let nombre = localStorage.getItem("nombre");
-    let ubicacion = localStorage.getItem("ubicacion");
-
-    if(nombre){
-        document.getElementById("saludo").innerText =
-        "Hola " + nombre + " desde " + ubicacion;
-    }
-}
-
-</script>
-
-</body>
-</html>
+<!DOCTYPE html>  <html>  
+<head>  
+<meta charset="UTF-8">  
+<title>Cuidado de Cultivos</title>  <style>  
+body { font-family: Arial; background-color: #f0f8f5; }  
+h1 { color: green; }  
+.seccion { background: white; padding: 10px; margin: 10px; border-radius: 10px; }  
+.cultivo { border: 1px solid #ccc; padding: 10px; margin: 10px; background: white; }  
+button { margin-top: 5px; }  
+  
+input {  
+    padding: 5px;  
+    margin: 5px;  
+}  
+</style>  </head>  <body>  <h1>🌱 Mi Huerto Inteligente</h1>  <div class="seccion">  
+<h2>Perfil</h2>  
+<input id="nombre" placeholder="Nombre">  
+<input id="ubicacion" placeholder="Ubicación">  
+<button onclick="guardarPerfil()">Guardar</button>  
+<p id="saludo"></p>  
+</div>  <div class="seccion">  
+<h2>Mi Huerto</h2>  
+<div id="huerto"></div>  
+</div>  <h2 style="margin-left:10px;">Catálogo de Cultivos</h2>  <input id="busqueda" placeholder="Buscar cultivo..." onkeyup="mostrarCatalogo()">  <div id="catalogo"></div>  <script>  
+  
+const plantas = [  
+  
+{  
+  nombre:"Maíz",  
+  tipo:"Grano",  
+  riego:{ frecuencia:"2–3 veces/semana", metodo:"goteo o surcos", sensibilidad:"no tolera encharcamiento" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"franco-arenoso", ph:"5.8–7.0", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"3–5", temporada:"primavera", distancia_cm:"25–30" },  
+  germinacion:{ dias:"5–10", condiciones:"calor y humedad constante" }  
+},  
+  
+{  
+  nombre:"Frijol",  
+  tipo:"Grano",  
+  riego:{ frecuencia:"2 veces/semana", metodo:"moderado directo al suelo", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"media-alta" },  
+  suelo:{ tipo:"ligero", ph:"6.0–7.5", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"3–4", temporada:"primavera-verano", distancia_cm:"10–15" },  
+  germinacion:{ dias:"5–8", condiciones:"suelo cálido" }  
+},  
+  
+{  
+  nombre:"Trigo",  
+  tipo:"Grano",  
+  riego:{ frecuencia:"1–2 veces/semana", metodo:"ligero", sensibilidad:"baja humedad" },  
+  luz:{ horas:"6–8", intensidad:"media" },  
+  suelo:{ tipo:"franco", ph:"6.0–7.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"2–3", temporada:"otoño-invierno", distancia_cm:"10–15" },  
+  germinacion:{ dias:"7–10", condiciones:"temperatura fresca" }  
+},  
+  
+{  
+  nombre:"Arroz",  
+  tipo:"Grano",  
+  riego:{ frecuencia:"constante", metodo:"inundación controlada", sensibilidad:"requiere mucha agua" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"arcilloso", ph:"5.5–7.0", drenaje:"bajo (retención)" },  
+  siembra:{ profundidad_cm:"2–4", temporada:"primavera-verano", distancia_cm:"15–20" },  
+  germinacion:{ dias:"7–14", condiciones:"agua permanente" }  
+},  
+  
+{  
+  nombre:"Sorgo",  
+  tipo:"Grano",  
+  riego:{ frecuencia:"baja (1/semana)", metodo:"resistente a sequía", sensibilidad:"muy resistente" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"pobre o arenoso", ph:"5.5–7.5", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"2–4", temporada:"primavera", distancia_cm:"20–30" },  
+  germinacion:{ dias:"7–10", condiciones:"calor seco" }  
+},  
+  
+{  
+  nombre:"Aguacate",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"2–3/semana", metodo:"profundo", sensibilidad:"no encharcar" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"profundo", ph:"6.0–7.0", drenaje:"excelente" },  
+  siembra:{ profundidad_cm:"5–10 (semilla)", temporada:"primavera", distancia_cm:"300+" },  
+  germinacion:{ dias:"15–45", condiciones:"calor constante" }  
+},  
+  
+{  
+  nombre:"Mango",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"profundo", sensibilidad:"media" },  
+  luz:{ horas:"8–10", intensidad:"muy alta" },  
+  suelo:{ tipo:"arenoso", ph:"5.5–7.5", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"5–10", temporada:"primavera-verano", distancia_cm:"400+" },  
+  germinacion:{ dias:"15–30", condiciones:"clima cálido" }  
+},  
+  
+{  
+  nombre:"Plátano",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"alta", metodo:"constante", sensibilidad:"requiere humedad" },  
+  luz:{ horas:"5–8", intensidad:"media" },  
+  suelo:{ tipo:"rico en materia orgánica", ph:"5.5–7.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"20–30", temporada:"todo el año", distancia_cm:"300+" },  
+  germinacion:{ dias:"15–30", condiciones:"humedad alta" }  
+},  
+  
+{  
+  nombre:"Naranja",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"2–3/semana", metodo:"profundo", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.5", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"5–10", temporada:"primavera", distancia_cm:"300+" },  
+  germinacion:{ dias:"15–30", condiciones:"clima templado" }  
+},  
+  
+{  
+  nombre:"Limón",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"2–3/semana", metodo:"moderado", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"5.5–7.0", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"5–10", temporada:"primavera", distancia_cm:"300+" },  
+  germinacion:{ dias:"15–30", condiciones:"calor constante" }  
+},  
+  
+{  
+  nombre:"Papaya",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"ligero constante", sensibilidad:"alta humedad" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"suelto", ph:"5.5–7.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"2–3", temporada:"primavera-verano", distancia_cm:"200+" },  
+  germinacion:{ dias:"10–20", condiciones:"calor tropical" }  
+},  
+  
+{  
+  nombre:"Sandía",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"abundante en crecimiento", sensibilidad:"media" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"arenoso", ph:"6.0–7.5", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"3–5", temporada:"primavera", distancia_cm:"100+" },  
+  germinacion:{ dias:"4–8", condiciones:"calor seco" }  
+},  
+  
+{  
+  nombre:"Guayaba",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"profundo", sensibilidad:"resistente" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"5.5–7.0", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"3–5", temporada:"primavera", distancia_cm:"300+" },  
+  germinacion:{ dias:"15–30", condiciones:"clima cálido" }  
+},  
+  
+{  
+  nombre:"Tuna",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"muy baja", metodo:"mínimo", sensibilidad:"muy resistente a sequía" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"pobre o arenoso", ph:"6.0–8.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"5–10", temporada:"primavera", distancia_cm:"100+" },  
+  germinacion:{ dias:"15–30", condiciones:"sequía" }  
+},  
+  
+{  
+  nombre:"Pitaya",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"baja", metodo:"ligero", sensibilidad:"resistente" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"arenoso", ph:"6.0–7.5", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"2–3", temporada:"primavera", distancia_cm:"200+" },  
+  germinacion:{ dias:"10–20", condiciones:"calor seco" }  
+},  
+  
+{  
+  nombre:"Zapote",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"profundo", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"5.5–7.0", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"5–10", temporada:"primavera", distancia_cm:"300+" },  
+  germinacion:{ dias:"20–40", condiciones:"calor constante" }  
+},  
+  
+{  
+  nombre:"Mamey",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"profundo", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.0", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"5–10", temporada:"primavera", distancia_cm:"300+" },  
+  germinacion:{ dias:"20–40", condiciones:"calor tropical" }  
+},  
+  
+{  
+  nombre:"Chicozapote",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"profundo", sensibilidad:"resistente" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"5.5–7.0", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"5–10", temporada:"primavera", distancia_cm:"400+" },  
+  germinacion:{ dias:"20–50", condiciones:"calor húmedo" }  
+},  
+  
+{  
+  nombre:"Guanábana",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"constante", sensibilidad:"alta humedad" },  
+  luz:{ horas:"5–7", intensidad:"media" },  
+  suelo:{ tipo:"húmedo", ph:"5.5–6.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"3–5", temporada:"primavera", distancia_cm:"300+" },  
+  germinacion:{ dias:"15–30", condiciones:"tropical" }  
+},  
+  
+{  
+  nombre:"Tejocote",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"moderada", metodo:"ligero", sensibilidad:"resistente" },  
+  luz:{ horas:"6–8", intensidad:"media" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"3–5", temporada:"otoño-primavera", distancia_cm:"200+" },  
+  germinacion:{ dias:"20–40", condiciones:"templado" }  
+},  
+  
+{  
+  nombre:"Xoconostle",  
+  tipo:"Fruta",  
+  riego:{ frecuencia:"muy baja", metodo:"mínimo", sensibilidad:"muy resistente" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"arenoso", ph:"6.0–8.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"3–5", temporada:"primavera", distancia_cm:"100+" },  
+  germinacion:{ dias:"15–30", condiciones:"sequía" }  
+},  
+  
+{  
+  nombre:"Jitomate",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"3–4/semana", metodo:"constante", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"6.0–6.8", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"primavera", distancia_cm:"30–40" },  
+  germinacion:{ dias:"5–10", condiciones:"calor moderado" }  
+},  
+  
+{  
+  nombre:"Lechuga",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"alta", metodo:"superficial", sensibilidad:"calor extremo" },  
+  luz:{ horas:"4–6", intensidad:"media-baja" },  
+  suelo:{ tipo:"ligero", ph:"6.0–7.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1", temporada:"frío", distancia_cm:"20–25" },  
+  germinacion:{ dias:"5–10", condiciones:"temperatura fresca" }  
+},  
+  
+{  
+  nombre:"Zanahoria",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"constante", sensibilidad:"suelo suelto" },  
+  luz:{ horas:"6–8", intensidad:"media" },  
+  suelo:{ tipo:"arenoso profundo", ph:"6.0–6.8", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"frío-templado", distancia_cm:"5–10" },  
+  germinacion:{ dias:"10–20", condiciones:"suelo húmedo" }  
+},  
+  
+{  
+  nombre:"Cebolla",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"ligero", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"suelto", ph:"6.0–7.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"frío", distancia_cm:"10–15" },  
+  germinacion:{ dias:"7–12", condiciones:"temperatura fresca" }  
+},  
+  
+{  
+  nombre:"Chile",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"constante", sensibilidad:"media-alta" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.0", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"primavera", distancia_cm:"30–40" },  
+  germinacion:{ dias:"7–14", condiciones:"calor" }  
+},  
+  
+{  
+  nombre:"Calabaza",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"abundante en crecimiento", sensibilidad:"media" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"2–3", temporada:"primavera", distancia_cm:"100+" },  
+  germinacion:{ dias:"5–10", condiciones:"calor" }  
+},  
+  
+{  
+  nombre:"Nopal",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"muy baja", metodo:"mínimo", sensibilidad:"resistente a sequía" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"pobre", ph:"6.0–8.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"5", temporada:"todo el año", distancia_cm:"50+" },  
+  germinacion:{ dias:"15–30", condiciones:"seco" }  
+},  
+  
+{  
+  nombre:"Espinaca",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"alta", metodo:"constante", sensibilidad:"calor" },  
+  luz:{ horas:"4–6", intensidad:"media" },  
+  suelo:{ tipo:"fértil", ph:"6.5–7.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"frío", distancia_cm:"10–15" },  
+  germinacion:{ dias:"5–10", condiciones:"frío" }  
+},  
+  
+{  
+  nombre:"Acelga",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"alta", metodo:"constante", sensibilidad:"media" },  
+  luz:{ horas:"5–7", intensidad:"media" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"todo el año", distancia_cm:"20–30" },  
+  germinacion:{ dias:"7–12", condiciones:"templado" }  
+},  
+  
+{  
+  nombre:"Rábano",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"ligero constante", sensibilidad:"rápido crecimiento" },  
+  luz:{ horas:"6–8", intensidad:"media" },  
+  suelo:{ tipo:"suelto", ph:"6.0–7.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"frío", distancia_cm:"5–10" },  
+  germinacion:{ dias:"4–7", condiciones:"rápido" }  
+},  
+  
+{  
+  nombre:"Ejote",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"ligero constante", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.0", drenaje:"bueno" },  
+  siembra:{ profundidad_cm:"2–3", temporada:"primavera", distancia_cm:"10–15" },  
+  germinacion:{ dias:"5–10", condiciones:"calor" }  
+},  
+  
+{  
+  nombre:"Berro",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"muy alta", metodo:"agua constante", sensibilidad:"requiere humedad" },  
+  luz:{ horas:"4–6", intensidad:"media" },  
+  suelo:{ tipo:"húmedo", ph:"6.0–7.0", drenaje:"bajo" },  
+  siembra:{ profundidad_cm:"1", temporada:"todo el año", distancia_cm:"10–15" },  
+  germinacion:{ dias:"3–7", condiciones:"agua constante" }  
+},  
+  
+{  
+  nombre:"Col",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"constante", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"media" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"frío", distancia_cm:"30–40" },  
+  germinacion:{ dias:"7–10", condiciones:"templado" }  
+},  
+  
+{  
+  nombre:"Brócoli",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"constante", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"media" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"frío", distancia_cm:"40–50" },  
+  germinacion:{ dias:"7–14", condiciones:"templado" }  
+},  
+  
+{  
+  nombre:"Coliflor",  
+  tipo:"Verdura",  
+  riego:{ frecuencia:"moderada", metodo:"constante", sensibilidad:"alta temperatura" },  
+  luz:{ horas:"6–8", intensidad:"media" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"frío", distancia_cm:"40–50" },  
+  germinacion:{ dias:"7–14", condiciones:"templado" }  
+},  
+  
+{  
+  nombre:"Perejil",  
+  tipo:"Hierba",  
+  riego:{ frecuencia:"moderada", metodo:"ligero", sensibilidad:"lento crecimiento" },  
+  luz:{ horas:"4–6", intensidad:"media" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1", temporada:"todo el año", distancia_cm:"10–15" },  
+  germinacion:{ dias:"10–20", condiciones:"lento" }  
+},  
+  
+{  
+  nombre:"Cilantro",  
+  tipo:"Hierba",  
+  riego:{ frecuencia:"moderada", metodo:"constante", sensibilidad:"calor extremo" },  
+  luz:{ horas:"4–6", intensidad:"media" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"frío-templado", distancia_cm:"10–15" },  
+  germinacion:{ dias:"7–14", condiciones:"templado" }  
+},  
+  
+{  
+  nombre:"Quelite",  
+  tipo:"Verdura silvestre",  
+  riego:{ frecuencia:"baja", metodo:"natural", sensibilidad:"muy resistente" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"pobre", ph:"6.0–8.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"1", temporada:"lluvias", distancia_cm:"variable" },  
+  germinacion:{ dias:"5–10", condiciones:"natural" }  
+},  
+  
+{  
+  nombre:"Caña",  
+  tipo:"Industrial",  
+  riego:{ frecuencia:"alta", metodo:"inundación o surcos", sensibilidad:"requiere agua constante" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"6.0–7.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"10–15", temporada:"primavera", distancia_cm:"100+" },  
+  germinacion:{ dias:"15–30", condiciones:"tropical" }  
+},  
+  
+{  
+  nombre:"Algodón",  
+  tipo:"Fibra",  
+  riego:{ frecuencia:"moderada", metodo:"controlado", sensibilidad:"media" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"5.5–7.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"2–3", temporada:"primavera", distancia_cm:"30–50" },  
+  germinacion:{ dias:"5–10", condiciones:"calor" }  
+},  
+  
+{  
+  nombre:"Café",  
+  tipo:"Árbol",  
+  riego:{ frecuencia:"regular", metodo:"constante", sensibilidad:"sombra parcial" },  
+  luz:{ horas:"4–6", intensidad:"media" },  
+  suelo:{ tipo:"ácido", ph:"5.0–6.0", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"todo el año", distancia_cm:"200+" },  
+  germinacion:{ dias:"30–60", condiciones:"humedad" }  
+},  
+  
+{  
+  nombre:"Cacao",  
+  tipo:"Árbol",  
+  riego:{ frecuencia:"alta", metodo:"constante", sensibilidad:"alta humedad" },  
+  luz:{ horas:"4–6", intensidad:"baja-media" },  
+  suelo:{ tipo:"húmedo", ph:"5.5–6.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"2–3", temporada:"todo el año", distancia_cm:"300+" },  
+  germinacion:{ dias:"7–21", condiciones:"tropical" }  
+},  
+  
+{  
+  nombre:"Aloe Vera",  
+  tipo:"Medicinal",  
+  riego:{ frecuencia:"muy baja", metodo:"mínimo", sensibilidad:"sequía" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"arenoso", ph:"6.0–8.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"2–3", temporada:"todo el año", distancia_cm:"30+" },  
+  germinacion:{ dias:"15–30", condiciones:"seco" }  
+},  
+  
+{  
+  nombre:"Alfalfa",  
+  tipo:"Forraje",  
+  riego:{ frecuencia:"moderada", metodo:"constante", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"fértil", ph:"6.5–7.5", drenaje:"medio" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"primavera", distancia_cm:"10–20" },  
+  germinacion:{ dias:"5–10", condiciones:"templado" }  
+},  
+  
+{  
+  nombre:"Agave",  
+  tipo:"Resistente",  
+  riego:{ frecuencia:"muy baja", metodo:"mínimo", sensibilidad:"sequía extrema" },  
+  luz:{ horas:"8–10", intensidad:"alta" },  
+  suelo:{ tipo:"arenoso", ph:"6.0–8.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"5–10", temporada:"todo el año", distancia_cm:"100+" },  
+  germinacion:{ dias:"15–30", condiciones:"seco" }  
+},  
+  
+{  
+  nombre:"Chía",  
+  tipo:"Semilla",  
+  riego:{ frecuencia:"baja", metodo:"ligero", sensibilidad:"resistente" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"ligero", ph:"6.0–8.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"1", temporada:"primavera", distancia_cm:"20" },  
+  germinacion:{ dias:"7–14", condiciones:"templado" }  
+},  
+  
+{  
+  nombre:"Amaranto",  
+  tipo:"Semilla",  
+  riego:{ frecuencia:"baja", metodo:"ligero", sensibilidad:"resistente" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"resistente", ph:"6.0–8.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"1–2", temporada:"primavera", distancia_cm:"20–30" },  
+  germinacion:{ dias:"5–10", condiciones:"calor" }  
+},  
+  
+{  
+  nombre:"Cacahuate",  
+  tipo:"Semilla",  
+  riego:{ frecuencia:"moderada", metodo:"ligero constante", sensibilidad:"media" },  
+  luz:{ horas:"6–8", intensidad:"alta" },  
+  suelo:{ tipo:"suelto", ph:"5.5–7.0", drenaje:"alto" },  
+  siembra:{ profundidad_cm:"3–5", temporada:"primavera", distancia_cm:"20–30" },  
+  germinacion:{ dias:"7–10", condiciones:"calor" }  
+},  
+  
+{  
+  nombre:"Haba",  
+  tipo:"Se
