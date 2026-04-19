@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Huerto Simulador</title>
+<title>Huerto Simulador PRO</title>
 
 <style>
 body { font-family: Arial; background:#f0f8f5; }
@@ -16,7 +16,7 @@ h1 { color: green; }
     border-radius:10px;
 }
 
-.cultivo {
+.cultivo, .item {
     border:1px solid #ccc;
     padding:10px;
     margin:10px;
@@ -28,15 +28,12 @@ button {
     padding:5px;
     cursor:pointer;
 }
-
-.bad { color:red; }
-.good { color:green; }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Huerto Simulador</h1>
+<h1>🌱 Huerto Simulador PRO</h1>
 
 <div class="seccion">
 <h2>🌦️ Clima</h2>
@@ -44,22 +41,32 @@ button {
 </div>
 
 <div class="seccion">
-<h2>💰 Estado</h2>
-<p>Dinero: $<span id="dinero">50</span></p>
+<h2>💰 Dinero</h2>
+<p>$<span id="dinero">50</span></p>
 <p>Fertilizante: <span id="fertilizante">2</span></p>
 </div>
 
 <div class="seccion">
 <h2>🌱 Plantar</h2>
 <button onclick="plantar('Maíz 🌽')">🌽 Maíz</button>
-<button onclick="plantar('Frijol 🫘')">🫘 Frijol</button>
 <button onclick="plantar('Jitomate 🍅')">🍅 Jitomate</button>
+<button onclick="plantar('Frijol 🫘')">🫘 Frijol</button>
 </div>
 
 <div class="seccion">
 <h2>⚙️ Acciones</h2>
 <button onclick="regar()">💧 Regar</button>
 <button onclick="fertilizar()">🧬 Fertilizar</button>
+</div>
+
+<div class="seccion">
+<h2>🏪 Tienda</h2>
+<button onclick="comprarFertilizante()">Comprar fertilizante ($10)</button>
+</div>
+
+<div class="seccion">
+<h2>📦 Inventario</h2>
+<div id="inventario"></div>
 </div>
 
 <div class="seccion">
@@ -71,35 +78,48 @@ button {
 
 let dinero = 50;
 let fertilizante = 2;
-let climaActual = "soleado ☀️";
-let efectoClima = 1.2;
 
+let cooldownRiego = false;
+
+let inventario = [];
+
+//
+// 🌦️ CLIMA (REALISTA)
+//
+let climaActual = "normal ☁️";
+
+function cambiarClima(){
+
+    const clima = [
+        {t:"normal ☁️", w:0.6},
+        {t:"soleado ☀️", w:0.2},
+        {t:"lluvioso 🌧️", w:0.15},
+        {t:"seco 🔥", w:0.05}
+    ];
+
+    let r = Math.random();
+    let acc = 0;
+
+    for(let c of clima){
+        acc += c.w;
+        if(r <= acc){
+            climaActual = c.t;
+            break;
+        }
+    }
+
+    document.getElementById("clima").innerText = climaActual;
+}
+
+//
+// 🌱 HUERTO
+//
 function getHuerto(){
     return JSON.parse(localStorage.getItem("huerto") || "[]");
 }
 
 function saveHuerto(h){
     localStorage.setItem("huerto", JSON.stringify(h));
-}
-
-//
-// 🌦️ CLIMA
-//
-function cambiarClima(){
-    const tipos = [
-        {t:"soleado ☀️", e:1.3},
-        {t:"lluvioso 🌧️", e:1.5},
-        {t:"nublado ☁️", e:1.0},
-        {t:"seco 🔥", e:0.7}
-    ];
-
-    let c = tipos[Math.floor(Math.random()*tipos.length)];
-
-    climaActual = c.t;
-    efectoClima = c.e;
-
-    document.getElementById("clima").innerText =
-    climaActual + " | crecimiento x" + efectoClima;
 }
 
 //
@@ -111,7 +131,7 @@ function plantar(nombre){
     h.push({
         nombre,
         crecimiento:0,
-        plaga:false
+        listo:false
     });
 
     saveHuerto(h);
@@ -119,13 +139,25 @@ function plantar(nombre){
 }
 
 //
-// 💧 REGAR
+// 💧 RIEGO CON COOLDOWN
 //
 function regar(){
+
+    if(cooldownRiego){
+        alert("⏳ Espera antes de regar otra vez");
+        return;
+    }
+
+    cooldownRiego = true;
+
+    setTimeout(()=> cooldownRiego = false, 5000);
+
     let h = getHuerto();
 
     h.forEach(p=>{
-        p.crecimiento += 0.3 * efectoClima;
+        if(!p.listo){
+            p.crecimiento += 0.3;
+        }
     });
 
     saveHuerto(h);
@@ -133,7 +165,7 @@ function regar(){
 }
 
 //
-// 🧬 FERTILIZAR
+// 🧬 FERTILIZAR (CUESTA)
 //
 function fertilizar(){
 
@@ -147,8 +179,9 @@ function fertilizar(){
     let h = getHuerto();
 
     h.forEach(p=>{
-        p.crecimiento += 0.8;
-        p.plaga = false;
+        if(!p.listo){
+            p.crecimiento += 0.7;
+        }
     });
 
     saveHuerto(h);
@@ -156,14 +189,38 @@ function fertilizar(){
 }
 
 //
-// 💀 PLAGAS
+// 🏪 COMPRAR
 //
-function plagas(){
+function comprarFertilizante(){
+
+    if(dinero < 10){
+        alert("No tienes dinero");
+        return;
+    }
+
+    dinero -= 10;
+    fertilizante++;
+
+    render();
+}
+
+//
+// 🌱 CRECIMIENTO + COSECHA
+//
+function crecer(){
+
     let h = getHuerto();
 
     h.forEach(p=>{
-        if(Math.random() < 0.2){
-            p.plaga = true;
+        if(p.listo) return;
+
+        p.crecimiento += 0.05;
+
+        if(p.crecimiento >= 1.5){
+            p.crecimiento = 1.5;
+            p.listo = true;
+
+            inventario.push(p.nombre);
         }
     });
 
@@ -171,27 +228,32 @@ function plagas(){
 }
 
 //
-// 🌱 CRECIMIENTO
+// 📦 INVENTARIO
 //
-function crecer(){
-    let h = getHuerto();
+function renderInventario(){
 
-    h.forEach(p=>{
-        if(p.plaga){
-            p.crecimiento -= 0.05;
-        } else {
-            p.crecimiento += 0.05 * efectoClima;
-        }
+    let div = document.getElementById("inventario");
+    div.innerHTML = "";
 
-        if(p.crecimiento < 0) p.crecimiento = 0;
-
-        if(p.crecimiento >= 1.5){
-            p.crecimiento = 1.5;
-            dinero += 5;
-        }
+    inventario.forEach((i,idx)=>{
+        div.innerHTML += `
+        <div class="item">
+            ${i}
+            <button onclick="vender(${idx})">Vender ($8)</button>
+        </div>
+        `;
     });
+}
 
-    saveHuerto(h);
+//
+// 💰 VENDER
+//
+function vender(i){
+
+    dinero += 8;
+    inventario.splice(i,1);
+
+    render();
 }
 
 //
@@ -208,21 +270,16 @@ function render(){
         div.innerHTML += `
         <div class="cultivo">
             <h3>${p.nombre}</h3>
-
-            <p>Progreso: ${p.crecimiento.toFixed(2)}</p>
-
-            <p>${p.plaga ? "💀 PLAGA" : "🌿 sano"}</p>
-
-            <div>
-                ${p.nombre.includes("🌽") ? "🌽🌽🌽" : ""}
-                ${p.nombre.includes("🍅") ? "🍅🍅🍅" : ""}
-            </div>
+            <p>${p.listo ? "🍅 LISTA PARA COSECHA" : "🌱 creciendo"}</p>
+            <p>${p.crecimiento.toFixed(2)}</p>
         </div>
         `;
     });
 
     document.getElementById("dinero").innerText = dinero;
     document.getElementById("fertilizante").innerText = fertilizante;
+
+    renderInventario();
 }
 
 //
@@ -231,13 +288,16 @@ function render(){
 setInterval(()=>{
     cambiarClima();
     crecer();
-    plagas();
     render();
-},3000);
+},10000); // simula tiempo más lento
 
 //
-// 🚀 INICIO
+// ⏳ CLIMA LENTO (2 HORAS SIMULADAS)
 //
+setInterval(()=>{
+    cambiarClima();
+}, 7200000); // 2 horas
+
 window.onload = function(){
     cambiarClima();
     render();
