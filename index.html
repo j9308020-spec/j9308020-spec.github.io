@@ -44,22 +44,22 @@ input {
 <script>
 
 const plantas = [
-{ nombre:"Maíz", tipo:"Grano", riego:"Moderado", sol:"Pleno sol", tierra:"Fértil", composta:"Alta", germinacion:"5–10 días" },
-{ nombre:"Frijol", tipo:"Grano", riego:"Moderado", sol:"Sol", tierra:"Suelta", composta:"Media", germinacion:"5–8 días" },
-{ nombre:"Trigo", tipo:"Grano", riego:"Bajo", sol:"Sol", tierra:"Fértil", composta:"Media", germinacion:"7–10 días" },
+{ id:1, nombre:"Maíz", tipo:"Grano", riego:"Moderado", sol:"Pleno sol", tierra:"Fértil", composta:"Alta", germinacion:"5–10 días" },
+{ id:2, nombre:"Frijol", tipo:"Grano", riego:"Moderado", sol:"Sol", tierra:"Suelta", composta:"Media", germinacion:"5–8 días" },
+{ id:3, nombre:"Trigo", tipo:"Grano", riego:"Bajo", sol:"Sol", tierra:"Fértil", composta:"Media", germinacion:"7–10 días" },
 
-{ nombre:"Jitomate", tipo:"Verdura", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"5–10 días" },
-{ nombre:"Lechuga", tipo:"Verdura", riego:"Frecuente", sol:"Semisombra", tierra:"Suelta", composta:"Alta", germinacion:"5–10 días" },
-{ nombre:"Zanahoria", tipo:"Verdura", riego:"Moderado", sol:"Sol", tierra:"Profunda", composta:"Media", germinacion:"10–20 días" },
+{ id:4, nombre:"Jitomate", tipo:"Verdura", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"5–10 días" },
+{ id:5, nombre:"Lechuga", tipo:"Verdura", riego:"Frecuente", sol:"Semisombra", tierra:"Suelta", composta:"Alta", germinacion:"5–10 días" },
+{ id:6, nombre:"Zanahoria", tipo:"Verdura", riego:"Moderado", sol:"Sol", tierra:"Profunda", composta:"Media", germinacion:"10–20 días" },
 
-{ nombre:"Mango", tipo:"Fruta", riego:"Moderado", sol:"Sol directo", tierra:"Arenosa", composta:"Alta", germinacion:"2–4 semanas" },
-{ nombre:"Manzana", tipo:"Fruta", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"2–4 semanas" },
-{ nombre:"Sandía", tipo:"Fruta", riego:"Abundante", sol:"Sol", tierra:"Arenosa", composta:"Alta", germinacion:"4–8 días" },
+{ id:7, nombre:"Mango", tipo:"Fruta", riego:"Moderado", sol:"Sol directo", tierra:"Arenosa", composta:"Alta", germinacion:"2–4 semanas" },
+{ id:8, nombre:"Manzana", tipo:"Fruta", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"2–4 semanas" },
+{ id:9, nombre:"Sandía", tipo:"Fruta", riego:"Abundante", sol:"Sol", tierra:"Arenosa", composta:"Alta", germinacion:"4–8 días" },
 
-{ nombre:"Café", tipo:"Árbol", riego:"Regular", sol:"Sombra", tierra:"Ácida", composta:"Alta", germinacion:"30–60 días" },
-{ nombre:"Cacao", tipo:"Árbol", riego:"Constante", sol:"Sombra", tierra:"Húmeda", composta:"Alta", germinacion:"7–21 días" },
+{ id:10, nombre:"Café", tipo:"Árbol", riego:"Regular", sol:"Sombra", tierra:"Ácida", composta:"Alta", germinacion:"30–60 días" },
+{ id:11, nombre:"Cacao", tipo:"Árbol", riego:"Constante", sol:"Sombra", tierra:"Húmeda", composta:"Alta", germinacion:"7–21 días" },
 
-{ nombre:"Agave", tipo:"Resistente", riego:"Bajo", sol:"Sol", tierra:"Arenosa", composta:"Baja", germinacion:"2–4 semanas" }
+{ id:12, nombre:"Agave", tipo:"Resistente", riego:"Bajo", sol:"Sol", tierra:"Arenosa", composta:"Baja", germinacion:"2–4 semanas" }
 ];
 
 function guardarPerfil(){
@@ -81,7 +81,7 @@ function mostrarCatalogo(){
 
     plantas
     .filter(p => p.nombre.toLowerCase().includes(filtro))
-    .forEach((p, index) => {
+    .forEach((p) => {
 
         div.innerHTML += `
         <div class="cultivo">
@@ -92,7 +92,7 @@ function mostrarCatalogo(){
             <p>♻️ ${p.composta}</p>
             <p>⏳ ${p.germinacion}</p>
 
-            <button onclick="agregar(${index})">
+            <button onclick="agregar(${p.id})">
                 Agregar al huerto
             </button>
         </div>
@@ -100,12 +100,13 @@ function mostrarCatalogo(){
     });
 }
 
-function agregar(index){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+function agregar(id){
+    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
+
+    let planta = plantas.find(p => p.id === id);
 
     huerto.push({
-        ...plantas[index],
-        id: Date.now(),
+        ...planta,
         fecha: new Date().toLocaleDateString()
     });
 
@@ -113,10 +114,10 @@ function agregar(index){
     mostrarHuerto();
 }
 
-function eliminar(id){
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+function eliminar(nombre){
+    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
 
-    huerto = huerto.filter(p => p.id !== id);
+    huerto = huerto.filter(p => p.nombre !== nombre);
 
     localStorage.setItem("huerto", JSON.stringify(huerto));
     mostrarHuerto();
@@ -124,7 +125,7 @@ function eliminar(id){
 
 function mostrarHuerto(){
     let div = document.getElementById("huerto");
-    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
 
     div.innerHTML = "";
 
@@ -139,7 +140,7 @@ function mostrarHuerto(){
             <p>⏳ ${p.germinacion}</p>
             <p>📅 ${p.fecha}</p>
 
-            <button onclick="eliminar(${p.id})">Eliminar</button>
+            <button onclick="eliminar('${p.nombre}')">Eliminar</button>
         </div>
         `;
     });
