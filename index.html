@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>🌱 Huerto Inteligente Pro</title>
+<title>🌱 Huerto Inteligente Enciclopedia</title>
 
 <style>
 body { font-family: Arial; background-color: #f0f8f5; }
@@ -11,20 +11,19 @@ h1 { color: green; }
 .cultivo { border: 1px solid #ccc; padding: 10px; margin: 10px; background: white; }
 button { margin-top: 5px; cursor: pointer; }
 
-input {
-    padding: 5px;
-    margin: 5px;
-}
+input { padding: 5px; margin: 5px; }
+
+.info { font-size: 13px; color: #333; line-height: 1.4; }
 small { color: gray; }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Mi Huerto Inteligente Pro</h1>
+<h1>🌱 Mi Huerto Inteligente (Versión Enciclopedia)</h1>
 
 <div class="seccion">
-<h2>👤 Perfil del agricultor</h2>
+<h2>👤 Perfil</h2>
 <input id="nombre" placeholder="Nombre">
 <input id="ubicacion" placeholder="Ubicación">
 <button onclick="guardarPerfil()">Guardar</button>
@@ -36,7 +35,7 @@ small { color: gray; }
 <div id="huerto"></div>
 </div>
 
-<h2 style="margin-left:10px;">📚 Catálogo de Cultivos</h2>
+<h2 style="margin-left:10px;">📚 Catálogo EXTENSO de Cultivos</h2>
 
 <input id="busqueda" placeholder="🔍 Buscar cultivo..." onkeyup="mostrarCatalogo()">
 
@@ -48,118 +47,133 @@ const plantas = [
 {
 id:1,
 nombre:"Maíz 🌽",
-tipo:"Grano",
-riego:"💧 Moderado constante (sin encharcar)",
-sol:"☀️ Pleno sol",
-tierra:"🌱 Fértil, profunda y aireada",
-composta:"♻️ Alta (le encanta el nitrógeno)",
-germinacion:"⏳ 5–10 días",
-tips:"💡 Necesita espacio para crecer alto. Plántalo separado de otras plantas.",
-warning:"⚠️ No tolera suelos secos prolongados."
+info:`
+💧 RIEGO:
+- Moderado constante, necesita humedad estable.
+- Si falta agua en floración, baja la producción.
+
+☀️ SOL:
+- Requiere sol directo 6–8 horas.
+- Sin sol crece débil y con mazorcas pequeñas.
+
+🌱 SUELO:
+- Profundo, fértil y aireado.
+- No soporta suelos compactos.
+
+🧪 FERTILIZACIÓN:
+- Alta en nitrógeno al inicio.
+- Después fósforo y potasio.
+
+⚠️ PROBLEMAS:
+- Gusanos en raíz.
+- Falta de nutrientes = hojas amarillas.
+
+💡 TIP:
+- Plántalo en bloques, no en línea para mejor polinización.
+`
 },
 
 {
 id:2,
 nombre:"Frijol 🫘",
-tipo:"Grano",
-riego:"💧 Moderado",
-sol:"☀️ Sol directo",
-tierra:"🌱 Suelta y ligera",
-composta:"♻️ Media",
-germinacion:"⏳ 5–8 días",
-tips:"💡 Ayuda a mejorar el suelo porque fija nitrógeno.",
-warning:"⚠️ Evita exceso de agua o se pudren las raíces."
+info:`
+💧 RIEGO:
+- Moderado, sin exceso.
+- Encharcarlo lo mata rápido.
+
+☀️ SOL:
+- 6 horas de sol mínimo.
+
+🌱 SUELO:
+- Ligero y aireado.
+- Fija nitrógeno en el suelo (mejora la tierra).
+
+🧪 FERTILIZACIÓN:
+- Poco fertilizante necesario.
+
+⚠️ PROBLEMAS:
+- Hongos por humedad.
+- Pulgones.
+
+💡 TIP:
+- Plántalo cerca de maíz (sistema tradicional milpa).
+`
 },
 
 {
 id:3,
-nombre:"Trigo 🌾",
-tipo:"Grano",
-riego:"💧 Bajo",
-sol:"☀️ Mucho sol",
-tierra:"🌱 Fértil y drenada",
-composta:"♻️ Media",
-germinacion:"⏳ 7–10 días",
-tips:"💡 Resiste bien climas secos.",
-warning:"⚠️ No soporta suelos encharcados."
+nombre:"Jitomate 🍅",
+info:`
+💧 RIEGO:
+- Constante pero sin encharcar.
+- Cambios bruscos causan grietas en el fruto.
+
+☀️ SOL:
+- 6–8 horas diarias.
+
+🌱 SUELO:
+- Rico en nutrientes y drenado.
+
+🧪 FERTILIZACIÓN:
+- Alta en potasio para frutos grandes.
+
+⚠️ PROBLEMAS:
+- Hongos en hojas.
+- Plagas como mosca blanca.
+
+💡 TIP:
+- Usa tutores o se cae por el peso.
+`
 },
 
 {
 id:4,
-nombre:"Jitomate 🍅",
-tipo:"Verdura",
-riego:"💧 Moderado constante",
-sol:"☀️ 6–8 horas de sol",
-tierra:"🌱 Fértil y ligera",
-composta:"♻️ Alta",
-germinacion:"⏳ 5–10 días",
-tips:"💡 Necesita tutores para sostenerse cuando crece.",
-warning:"⚠️ Sensible a plagas si hay mucha humedad."
+nombre:"Lechuga 🥬",
+info:`
+💧 RIEGO:
+- Frecuente, suelo húmedo siempre.
+
+☀️ SOL:
+- Semisombra ideal.
+
+🌱 SUELO:
+- Suelto y fresco.
+
+🧪 FERTILIZACIÓN:
+- Moderada.
+
+⚠️ PROBLEMAS:
+- Amargura por calor.
+- Se espiga si hace mucho sol.
+
+💡 TIP:
+- Cosecha temprano para mejor sabor.
+`
 },
 
 {
 id:5,
-nombre:"Lechuga 🥬",
-tipo:"Verdura",
-riego:"💧 Frecuente",
-sol:"🌤️ Semisombra",
-tierra:"🌱 Suelta y fresca",
-composta:"♻️ Alta",
-germinacion:"⏳ 5–10 días",
-tips:"💡 Crece mejor en clima fresco.",
-warning:"⚠️ El calor extremo la amarga."
-},
-
-{
-id:6,
 nombre:"Zanahoria 🥕",
-tipo:"Verdura",
-riego:"💧 Moderado",
-sol:"☀️ Sol directo",
-tierra:"🌱 Profunda y sin piedras",
-composta:"♻️ Media",
-germinacion:"⏳ 10–20 días",
-tips:"💡 La tierra debe estar muy suelta o salen deformes.",
-warning:"⚠️ No mover el suelo mientras crece."
-},
+info:`
+💧 RIEGO:
+- Constante pero suave.
 
-{
-id:7,
-nombre:"Mango 🥭",
-tipo:"Fruta",
-riego:"💧 Moderado",
-sol:"☀️ Sol directo",
-tierra:"🌱 Arenosa y drenada",
-composta:"♻️ Alta",
-germinacion:"⏳ 2–4 semanas",
-tips:"💡 Árbol grande, necesita espacio.",
-warning:"⚠️ Crecimiento lento al inicio."
-},
+☀️ SOL:
+- Sol directo.
 
-{
-id:8,
-nombre:"Sandía 🍉",
-tipo:"Fruta",
-riego:"💧 Abundante",
-sol:"☀️ Mucho sol",
-tierra:"🌱 Arenosa",
-composta:"♻️ Alta",
-germinacion:"⏳ 4–8 días",
-tips:"💡 Necesita espacio para extenderse.",
-warning:"⚠️ Sin sol no produce frutas dulces."
-},
+🌱 SUELO:
+- Profundo, sin piedras.
+- Si hay piedras salen deformes.
 
-{
-id:9,
-nombre:"Café ☕",
-tipo:"Árbol",
-riego:"💧 Regular",
-sol:"🌤️ Sombra parcial",
-tierra:"🌱 Ácida y rica en materia orgánica",
-composta:"♻️ Alta",
-germinacion:"⏳ 30–60 días",
-tips:"💡 Crece lento pero estable.",
-warning:"⚠️ No tolera sol directo fuerte."
+🧪 FERTILIZACIÓN:
+- Media, evita exceso de nitrógeno.
+
+⚠️ PROBLEMAS:
+- Raíces torcidas.
+
+💡 TIP:
+- No trasplantar, si no se daña la raíz.
+`
 }
 ];
 
@@ -188,14 +202,9 @@ function mostrarCatalogo(){
         <div class="cultivo">
             <h3>${p.nombre}</h3>
 
-            <p>${p.riego}</p>
-            <p>${p.sol}</p>
-            <p>${p.tierra}</p>
-            <p>${p.composta}</p>
-            <p>${p.germinacion}</p>
-
-            <p>💡 ${p.tips}</p>
-            <p>⚠️ ${p.warning}</p>
+            <div class="info">
+                ${p.info.replace(/\n/g, "<br>")}
+            </div>
 
             <button onclick="agregar(${p.id})">
                 ➕ Agregar al huerto
@@ -211,7 +220,8 @@ function agregar(id){
     let planta = plantas.find(p => p.id === id);
 
     huerto.push({
-        ...planta,
+        nombre: planta.nombre,
+        info: planta.info,
         fecha: new Date().toLocaleDateString()
     });
 
@@ -238,11 +248,7 @@ function mostrarHuerto(){
         div.innerHTML += `
         <div class="cultivo">
             <h3>${p.nombre}</h3>
-            <p>${p.riego}</p>
-            <p>${p.sol}</p>
-            <p>${p.tierra}</p>
-            <p>${p.composta}</p>
-            <p>${p.germinacion}</p>
+            <div class="info">${p.info.replace(/\n/g,"<br>")}</div>
             <p>📅 ${p.fecha}</p>
 
             <button onclick="eliminar('${p.nombre}')">🗑️ Eliminar</button>
