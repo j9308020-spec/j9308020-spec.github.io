@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>🌱 Huerto Inteligente 52 Cultivos</title>
+<title>🌱 Huerto Inteligente</title>
 
 <style>
 body { font-family: Arial; background:#f0f8f5; }
@@ -24,8 +24,6 @@ h1 { color: green; }
   border-radius:10px;
 }
 
-small { color:#555; display:block; margin-top:5px; }
-
 input {
   padding:5px;
   margin:5px;
@@ -39,9 +37,9 @@ button { margin-top:5px; cursor:pointer; }
 
 <h1>🌱 Mi Huerto Inteligente</h1>
 
-<!-- ================= PERFIL ================= -->
+<!-- PERFIL -->
 <div class="seccion">
-<h2>👤 Perfil del agricultor</h2>
+<h2>👤 Perfil</h2>
 
 <input id="nombre" placeholder="Nombre">
 <input id="ubicacion" placeholder="Ubicación">
@@ -50,89 +48,179 @@ button { margin-top:5px; cursor:pointer; }
 <p id="saludo"></p>
 </div>
 
-<!-- ================= HUERTO ================= -->
+<!-- HUERTO ARRIBA -->
 <div class="seccion">
-<h2>🌿 Tu Huerto (activos)</h2>
+<h2>🌿 Tu Huerto</h2>
 <div id="huerto"></div>
 </div>
 
-<!-- ================= BUSCADOR ================= -->
+<!-- BUSCADOR -->
 <div class="seccion">
 <h2>🔎 Buscar cultivo</h2>
-<input id="busqueda" placeholder="Ej: maíz, chile, café..." onkeyup="mostrarCatalogo()">
+<input id="busqueda" placeholder="Buscar..." onkeyup="mostrarCatalogo()">
 </div>
 
-<!-- ================= CATÁLOGO ================= -->
+<!-- CATÁLOGO -->
 <div class="seccion">
-<h2>📚 Catálogo de cultivos</h2>
+<h2>📚 Catálogo</h2>
 <div id="catalogo"></div>
 </div>
 
 <script>
 
 /* =========================
-   🌱 52 CULTIVOS
+   🌱 AQUÍ VAN TUS PLANTAS
    ========================= */
 
 const plantas = [
-{ id:1, nombre:"Maíz 🌽", dias:110, agua:"Moderada (25–40 mm/sem)", sol:"6–8h sol directo", suelo:"Fértil profundo", fert:"Composta + materia orgánica", info:"Base alimenticia de México, requiere calor constante y suelo nutrido." },
 
-{ id:2, nombre:"Frijol 🫘", dias:70, agua:"Moderada", sol:"6h", suelo:"Suelto aireado", fert:"Bajo-moderado (fija nitrógeno)", info:"Mejora el suelo naturalmente al capturar nitrógeno del aire." },
+{ id:1, nombre:"Maíz 🌽", dias:110, agua:"25–40 mm/semana", sol:"6–8 h/día", suelo:"Franco, profundo, bien drenado", fert:"Nitrógeno alto + composta", info:"Necesita calor constante (18–30°C)." },
 
-{ id:3, nombre:"Trigo 🌾", dias:120, agua:"Moderada baja", sol:"6h", suelo:"Fértil", fert:"Moderado", info:"Cereal de clima templado, sensible a exceso de humedad." },
+{ id:2, nombre:"Frijol 🫘", dias:70, agua:"15–25 mm/semana", sol:"6 h/día", suelo:"Ligero, bien drenado", fert:"Bajo nitrógeno (fija N)", info:"Evitar exceso de agua." },
 
-{ id:4, nombre:"Arroz 🍚", dias:150, agua:"Alta (inundación)", sol:"6–8h", suelo:"Arcilloso húmedo", fert:"Moderado", info:"Cultivo de agua permanente en etapas clave." },
+{ id:3, nombre:"Trigo 🌾", dias:120, agua:"20–30 mm/semana", sol:"Pleno sol", suelo:"Franco-arcilloso", fert:"Nitrógeno moderado", info:"Tolera frío moderado." },
 
-{ id:5, nombre:"Sorgo 🌾", dias:100, agua:"Baja", sol:"Sol fuerte", suelo:"Resistente seco", fert:"Bajo-moderado", info:"Uno de los cultivos más resistentes a sequía." },
+{ id:4, nombre:"Arroz 🍚", dias:150, agua:"Alta (suelo inundado)", sol:"Pleno sol", suelo:"Arcilloso retentivo", fert:"NPK balanceado", info:"Requiere agua constante." },
 
-{ id:6, nombre:"Aguacate 🥑", dias:180, agua:"Moderada", sol:"6–8h", suelo:"Drenado profundo", fert:"Composta orgánica", info:"Árbol tropical sensible a encharcamiento." },
+{ id:5, nombre:"Sorgo 🌾", dias:100, agua:"10–20 mm/semana", sol:"Pleno sol", suelo:"Adaptable", fert:"Bajo", info:"Alta resistencia a sequía." },
 
-{ id:7, nombre:"Mango 🥭", dias:200, agua:"Moderada", sol:"Sol directo", suelo:"Arenoso", fert:"Moderado", info:"Requiere calor constante para fructificar." },
+{ id:6, nombre:"Aguacate 🥑", dias:180, agua:"20–30 L/semana", sol:"6–8 h", suelo:"Suelto, drenado (pH 5.5–7)", fert:"Materia orgánica + potasio", info:"Evitar encharcamientos." },
 
-{ id:8, nombre:"Plátano 🍌", dias:120, agua:"Alta constante", sol:"8h", suelo:"Húmedo rico", fert:"Alto orgánico", info:"Necesita humedad continua y protección del viento." },
+{ id:7, nombre:"Mango 🥭", dias:200, agua:"15–25 L/semana", sol:"Pleno sol", suelo:"Arenoso-drenado", fert:"Composta + fósforo", info:"Tolera sequía ligera." },
 
-{ id:9, nombre:"Naranja 🍊", dias:180, agua:"Moderada", sol:"Sol", suelo:"Ácido drenado", fert:"Moderado", info:"Cítrico sensible a exceso de agua." },
+{ id:8, nombre:"Plátano 🍌", dias:120, agua:"40–60 L/semana", sol:"6–8 h", suelo:"Rico en orgánica", fert:"Alto en potasio", info:"Alta demanda de agua." },
 
-{ id:10, nombre:"Limón 🍋", dias:170, agua:"Moderada", sol:"Sol", suelo:"Drenado", fert:"Composta", info:"Produce durante casi todo el año en clima cálido." },
+{ id:9, nombre:"Naranja 🍊", dias:180, agua:"20–30 L/semana", sol:"Pleno sol", suelo:"Ligeramente ácido", fert:"NPK balanceado", info:"Riego regular sin exceso." },
 
-{ id:11, nombre:"Jitomate 🍅", dias:90, agua:"Regular", sol:"Sol", suelo:"Fértil", fert:"Composta", info:"Muy sensible a hongos si hay exceso de humedad." },
+{ id:10, nombre:"Limón 🍋", dias:170, agua:"15–25 L/semana", sol:"6–8 h", suelo:"Drenado, pH 5.5–7", fert:"Orgánico + calcio", info:"Produce varias veces al año." },
 
-{ id:12, nombre:"Cebolla 🧅", dias:110, agua:"Baja-moderada", sol:"Sol", suelo:"Suelto", fert:"Moderado", info:"Prefiere suelos ligeros sin compactación." },
+{ id:11, nombre:"Jitomate 🍅", dias:90, agua:"15–25 mm/semana", sol:"6–8 h", suelo:"Fértil, drenado", fert:"Alto en potasio", info:"Evitar mojar hojas." },
 
-{ id:13, nombre:"Chile 🌶️", dias:120, agua:"Moderada", sol:"Sol fuerte", suelo:"Fértil", fert:"Moderado", info:"El calor intensifica su picor." },
+{ id:12, nombre:"Cebolla 🧅", dias:110, agua:"10–20 mm/semana", sol:"Pleno sol", suelo:"Ligero", fert:"Fósforo y potasio", info:"Sensible a exceso de agua." },
 
-{ id:14, nombre:"Lechuga 🥬", dias:60, agua:"Frecuente ligera", sol:"Semisombra", suelo:"Suelto", fert:"Moderado", info:"Crece mejor en clima fresco." },
+{ id:13, nombre:"Chile 🌶️", dias:120, agua:"15–25 mm/semana", sol:"6–8 h", suelo:"Fértil", fert:"NPK balanceado", info:"Requiere calor constante." },
 
-{ id:15, nombre:"Zanahoria 🥕", dias:100, agua:"Moderada", sol:"Sol", suelo:"Profundo suelto", fert:"Bajo-moderado", info:"Raíz sensible a suelos duros." },
+{ id:14, nombre:"Lechuga 🥬", dias:60, agua:"20–30 mm/semana", sol:"4–6 h", suelo:"Suelto, húmedo", fert:"Orgánico alto", info:"Prefiere clima fresco." },
 
-{ id:16, nombre:"Caña de azúcar 🎋", dias:365, agua:"Alta", sol:"Sol", suelo:"Fértil", fert:"Moderado", info:"Cultivo tropical industrial de alto consumo de agua." },
+{ id:15, nombre:"Zanahoria 🥕", dias:100, agua:"15–25 mm/semana", sol:"6–8 h", suelo:"Muy suelto y profundo", fert:"Bajo nitrógeno", info:"Sin piedras." },
 
-{ id:17, nombre:"Café ☕", dias:365, agua:"Constante", sol:"Sombra", suelo:"Ácido", fert:"Composta", info:"Crece bajo sombra en climas húmedos." },
+{ id:16, nombre:"Caña de azúcar 🎋", dias:365, agua:"Alta constante", sol:"Pleno sol", suelo:"Fértil profundo", fert:"Nitrógeno alto", info:"Clima tropical." },
 
-{ id:18, nombre:"Cacao 🍫", dias:365, agua:"Alta constante", sol:"Sombra", suelo:"Húmedo", fert:"Composta", info:"Base del chocolate, requiere humedad alta." },
+{ id:17, nombre:"Café ☕", dias:365, agua:"Frecuente sin exceso", sol:"Sombra parcial", suelo:"Ácido (pH 5–6)", fert:"Orgánico", info:"Altitud ideal 600–1800 m." },
 
-{ id:19, nombre:"Algodón 🧵", dias:160, agua:"Moderada", sol:"Sol", suelo:"Fértil", fert:"Moderado", info:"Cultivo textil importante." },
+{ id:18, nombre:"Cacao 🍫", dias:365, agua:"Alta humedad", sol:"Sombra", suelo:"Rico y húmedo", fert:"Orgánico", info:"Muy sensible al clima." },
 
-{ id:20, nombre:"Aloe vera 🌿", dias:120, agua:"Muy baja", sol:"Sol", suelo:"Arenoso", fert:"Bajo", info:"Planta medicinal resistente a sequía." },
+{ id:19, nombre:"Algodón 🧵", dias:160, agua:"20–30 mm/semana", sol:"Pleno sol", suelo:"Fértil", fert:"Nitrógeno", info:"Clima cálido." },
 
-/* ... (continúan hasta 52 con la misma estructura equilibrada) */
+{ id:20, nombre:"Aloe vera 🌿", dias:120, agua:"Muy baja", sol:"Pleno sol", suelo:"Arenoso", fert:"Mínimo", info:"Planta suculenta." },
 
-{ id:52, nombre:"Romero 🌿", dias:120, agua:"Baja", sol:"Sol", suelo:"Seco", fert:"Bajo", info:"Hierba aromática resistente y de bajo mantenimiento." }
+{ id:21, nombre:"Alfalfa 🌱", dias:25, agua:"Moderada", sol:"Pleno sol", suelo:"Fértil", fert:"Fósforo", info:"Forraje rápido." },
+
+{ id:22, nombre:"Agave 🌵", dias:365, agua:"Muy baja", sol:"Pleno sol", suelo:"Seco", fert:"Bajo", info:"Ideal para zonas áridas." },
+
+{ id:23, nombre:"Papaya 🍈", dias:60, agua:"Moderada", sol:"Pleno sol", suelo:"Ligero", fert:"Orgánico", info:"Crecimiento rápido." },
+
+{ id:24, nombre:"Sandía 🍉", dias:35, agua:"Alta", sol:"8 h", suelo:"Arenoso", fert:"Potasio", info:"Necesita espacio." },
+
+{ id:25, nombre:"Calabaza 🎃", dias:30, agua:"Alta", sol:"6–8 h", suelo:"Fértil", fert:"Orgánico", info:"Crece rápido." },
+
+{ id:26, nombre:"Papa 🥔", dias:90, agua:"20–30 mm/semana", sol:"6–8 h", suelo:"Suelto, bien drenado", fert:"Potasio alto", info:"Evitar encharcamiento." },
+
+{ id:27, nombre:"Tomatillo 🍏", dias:80, agua:"15–25 mm/semana", sol:"6–8 h", suelo:"Fértil", fert:"Composta", info:"Base de salsas." },
+
+{ id:28, nombre:"Nopal 🌵", dias:60, agua:"Muy baja", sol:"Pleno sol", suelo:"Seco, arenoso", fert:"Mínimo", info:"Altamente resistente." },
+
+{ id:29, nombre:"Haba 🌱", dias:90, agua:"20–30 mm/semana", sol:"Pleno sol", suelo:"Fértil", fert:"Moderado", info:"Clima templado." },
+
+{ id:30, nombre:"Garbanzo 🫘", dias:100, agua:"10–20 mm/semana", sol:"Pleno sol", suelo:"Seco", fert:"Bajo", info:"Tolera sequía." },
+
+{ id:31, nombre:"Avena 🌾", dias:120, agua:"20–30 mm/semana", sol:"Pleno sol", suelo:"Fértil", fert:"Moderado", info:"Clima fresco." },
+
+{ id:32, nombre:"Amaranto 🌾", dias:90, agua:"10–20 mm/semana", sol:"Pleno sol", suelo:"Resistente", fert:"Bajo", info:"Muy nutritivo." },
+
+{ id:33, nombre:"Chía ⚫", dias:100, agua:"10–20 mm/semana", sol:"Pleno sol", suelo:"Seco", fert:"Bajo", info:"Semilla energética." },
+
+{ id:34, nombre:"Jícama 🌱", dias:120, agua:"20–30 mm/semana", sol:"6–8 h", suelo:"Suelto", fert:"Moderado", info:"Raíz dulce." },
+
+{ id:35, nombre:"Chayote 🥒", dias:60, agua:"20–30 mm/semana", sol:"6–8 h", suelo:"Fértil", fert:"Orgánico", info:"Enredadera." },
+
+{ id:36, nombre:"Chile serrano 🌶️", dias:110, agua:"15–25 mm/semana", sol:"6–8 h", suelo:"Fértil", fert:"NPK", info:"Picante medio." },
+
+{ id:37, nombre:"Chile habanero 🌶️", dias:120, agua:"15–25 mm/semana", sol:"6–8 h", suelo:"Fértil", fert:"NPK", info:"Muy picante." },
+
+{ id:38, nombre:"Chile poblano 🌶️", dias:115, agua:"15–25 mm/semana", sol:"6–8 h", suelo:"Fértil", fert:"Composta", info:"Uso culinario amplio." },
+
+{ id:39, nombre:"Guayaba 🍈", dias:150, agua:"20–30 L/semana", sol:"Pleno sol", suelo:"Fértil", fert:"Orgánico", info:"Fruta tropical." },
+
+{ id:40, nombre:"Tuna 🌵", dias:80, agua:"Muy baja", sol:"Pleno sol", suelo:"Seco", fert:"Bajo", info:"Fruto del nopal." },
+
+{ id:41, nombre:"Pitaya 🌺", dias:90, agua:"10–20 mm/semana", sol:"Pleno sol", suelo:"Arenoso", fert:"Bajo", info:"Cactus frutal." },
+
+{ id:42, nombre:"Coco 🥥", dias:365, agua:"Alta", sol:"Pleno sol", suelo:"Arenoso costero", fert:"Moderado", info:"Clima tropical." },
+
+{ id:43, nombre:"Fresa 🍓", dias:60, agua:"20–30 mm/semana", sol:"6–8 h", suelo:"Suelto", fert:"Orgánico", info:"Delicada." },
+
+{ id:44, nombre:"Mamey 🟠", dias:150, agua:"20–30 L/semana", sol:"Pleno sol", suelo:"Fértil", fert:"Orgánico", info:"Fruta dulce." },
+
+{ id:45, nombre:"Zapote ⚫", dias:140, agua:"20–30 L/semana", sol:"Pleno sol", suelo:"Fértil", fert:"Orgánico", info:"Tropical." },
+
+{ id:46, nombre:"Achiote 🔴", dias:120, agua:"10–20 mm/semana", sol:"Pleno sol", suelo:"Seco", fert:"Bajo", info:"Colorante natural." },
+
+{ id:47, nombre:"Cilantro 🌿", dias:40, agua:"20–30 mm/semana", sol:"4–6 h", suelo:"Suelto", fert:"Orgánico", info:"Crecimiento rápido." },
+
+{ id:48, nombre:"Perejil 🌿", dias:50, agua:"20–30 mm/semana", sol:"4–6 h", suelo:"Suelto", fert:"Orgánico", info:"Hierba aromática." },
+
+{ id:49, nombre:"Menta 🌿", dias:45, agua:"Frecuente", sol:"Semisombra", suelo:"Húmedo", fert:"Orgánico", info:"Muy invasiva." },
+
+{ id:50, nombre:"Romero 🌿", dias:120, agua:"Baja", sol:"Pleno sol", suelo:"Seco", fert:"Bajo", info:"Muy resistente." },
+
+{ id:51, nombre:"Albahaca 🌿", dias:60, agua:"20–30 mm/semana", sol:"6 h", suelo:"Suelto", fert:"Orgánico", info:"Aromática." },
+
+{ id:52, nombre:"Espinaca 🥬", dias:50, agua:"20–30 mm/semana", sol:"4–6 h", suelo:"Fértil", fert:"Orgánico", info:"Clima fresco." }
+  
 ];
+
+/* =========================
+   🌦️ CLIMA SEGÚN UBICACIÓN
+   ========================= */
+
+function analizarClima(ubicacion){
+  let u = ubicacion.toLowerCase();
+
+  if(u.includes("desierto") || u.includes("sonora") || u.includes("calor")){
+    return "🌵 Tus plantas crecerán rápido pero necesitarán más agua.";
+  }
+
+  if(u.includes("frio") || u.includes("montaña") || u.includes("nevado")){
+    return "🥶 Tus plantas se tardarán más de lo normal.";
+  }
+
+  if(u.includes("selva") || u.includes("humedo") || u.includes("veracruz")){
+    return "🌧️ Buen crecimiento, pero cuidado con exceso de agua.";
+  }
+
+  if(u.includes("mexico") || u.includes("ciudad") || u.includes("templado")){
+    return "🌤️ Tus plantas no tendrán problema.";
+  }
+
+  return "🌿 Están en condiciones casi perfectas.";
+}
 
 /* =========================
    PERFIL
    ========================= */
 
 function guardarPerfil(){
-  let n=document.getElementById("nombre").value;
-  let u=document.getElementById("ubicacion").value;
+  let n = document.getElementById("nombre").value;
+  let u = document.getElementById("ubicacion").value;
 
-  localStorage.setItem("nombre",n);
-  localStorage.setItem("ubicacion",u);
+  localStorage.setItem("nombre", n);
+  localStorage.setItem("ubicacion", u);
 
-  document.getElementById("saludo").innerText =
-  "👤 " + n + " desde 📍 " + u;
+  let mensaje = analizarClima(u);
+
+  document.getElementById("saludo").innerHTML =
+  "👤 " + n + " desde 📍 " + u + "<br><br>" + mensaje;
 }
 
 /* =========================
@@ -140,46 +228,46 @@ function guardarPerfil(){
    ========================= */
 
 function agregar(id){
-  let h=JSON.parse(localStorage.getItem("huerto")||"[]");
-  let p=plantas.find(x=>x.id===id);
+  let h = JSON.parse(localStorage.getItem("huerto") || "[]");
+  let p = plantas.find(x => x.id === id);
 
-  h.push({...p,fecha:Date.now()});
-  localStorage.setItem("huerto",JSON.stringify(h));
+  h.push({...p, fecha: Date.now()});
+  localStorage.setItem("huerto", JSON.stringify(h));
 
   mostrarHuerto();
 }
 
 function eliminar(fecha){
-  let h=JSON.parse(localStorage.getItem("huerto")||"[]");
-  h=h.filter(p=>p.fecha!==fecha);
+  let h = JSON.parse(localStorage.getItem("huerto") || "[]");
+  h = h.filter(p => p.fecha !== fecha);
 
-  localStorage.setItem("huerto",JSON.stringify(h));
+  localStorage.setItem("huerto", JSON.stringify(h));
   mostrarHuerto();
 }
 
 /* =========================
-   CATÁLOGO
+   CATÁLOGO + BUSCADOR
    ========================= */
 
 function mostrarCatalogo(){
-  let d=document.getElementById("catalogo");
-  let f=document.getElementById("busqueda").value.toLowerCase();
+  let d = document.getElementById("catalogo");
+  let f = document.getElementById("busqueda").value.toLowerCase();
 
-  d.innerHTML="";
+  d.innerHTML = "";
 
   plantas
-  .filter(p=>p.nombre.toLowerCase().includes(f))
-  .forEach(p=>{
-    d.innerHTML+=`
+  .filter(p => p.nombre.toLowerCase().includes(f))
+  .forEach(p => {
+
+    d.innerHTML += `
     <div class="cultivo">
       <h3>${p.nombre}</h3>
-      <small>${p.info}</small>
 
-      💧 Agua: ${p.agua}<br>
-      ☀️ Sol: ${p.sol}<br>
-      🌱 Suelo: ${p.suelo}<br>
-      🧪 Fertilizante: ${p.fert}<br>
-      ⏳ Ciclo: ${p.dias} días<br>
+      💧 ${p.agua}<br>
+      ☀️ ${p.sol}<br>
+      🌱 ${p.suelo}<br>
+      🧪 ${p.fert}<br>
+      ⏳ ${p.dias} días<br>
 
       <button onclick="agregar(${p.id})">➕ Agregar</button>
     </div>
@@ -192,33 +280,32 @@ function mostrarCatalogo(){
    ========================= */
 
 function mostrarHuerto(){
-  let d=document.getElementById("huerto");
-  let h=JSON.parse(localStorage.getItem("huerto")||"[]");
+  let d = document.getElementById("huerto");
+  let h = JSON.parse(localStorage.getItem("huerto") || "[]");
 
-  d.innerHTML="";
+  d.innerHTML = "";
 
-  if(h.length===0){
-    d.innerHTML="🌱 Sin cultivos aún";
+  if(h.length === 0){
+    d.innerHTML = "🌱 No tienes cultivos aún";
     return;
   }
 
-  h.forEach(p=>{
-    let dias=Math.floor((Date.now()-p.fecha)/86400000);
-    if(isNaN(dias)) dias=0;
+  h.forEach(p => {
+    let dias = Math.floor((Date.now() - p.fecha) / 86400000);
+    if(isNaN(dias)) dias = 0;
 
-    d.innerHTML+=`
+    d.innerHTML += `
     <div class="cultivo">
       <h3>${p.nombre}</h3>
-      <small>${p.info}</small><br><br>
 
       ⏳ ${dias} días creciendo<br>
-      🌱 Ciclo total: ${p.dias} días<br>
+      📅 Total: ${p.dias} días<br><br>
 
       💧 ${p.agua}<br>
       ☀️ ${p.sol}<br>
       🌱 ${p.suelo}<br>
 
-      <button onclick="eliminar(${p.fecha})">🗑️ Quitar</button>
+      <button onclick="eliminar(${p.fecha})">🗑️ Eliminar</button>
     </div>
     `;
   });
@@ -228,7 +315,18 @@ function mostrarHuerto(){
    INICIO
    ========================= */
 
-window.onload=function(){
+window.onload = function(){
+
+  let nombre = localStorage.getItem("nombre");
+  let ubicacion = localStorage.getItem("ubicacion");
+
+  if(nombre){
+    let mensaje = analizarClima(ubicacion);
+
+    document.getElementById("saludo").innerHTML =
+    "👤 " + nombre + " desde 📍 " + ubicacion + "<br><br>" + mensaje;
+  }
+
   mostrarCatalogo();
   mostrarHuerto();
 };
