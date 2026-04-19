@@ -2,28 +2,29 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Cuidado de Cultivos</title>
+<title>🌱 Huerto Inteligente Pro</title>
 
 <style>
 body { font-family: Arial; background-color: #f0f8f5; }
 h1 { color: green; }
 .seccion { background: white; padding: 10px; margin: 10px; border-radius: 10px; }
 .cultivo { border: 1px solid #ccc; padding: 10px; margin: 10px; background: white; }
-button { margin-top: 5px; }
+button { margin-top: 5px; cursor: pointer; }
 
 input {
     padding: 5px;
     margin: 5px;
 }
+small { color: gray; }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Mi Huerto Inteligente</h1>
+<h1>🌱 Mi Huerto Inteligente Pro</h1>
 
 <div class="seccion">
-<h2>Perfil</h2>
+<h2>👤 Perfil del agricultor</h2>
 <input id="nombre" placeholder="Nombre">
 <input id="ubicacion" placeholder="Ubicación">
 <button onclick="guardarPerfil()">Guardar</button>
@@ -31,35 +32,135 @@ input {
 </div>
 
 <div class="seccion">
-<h2>Mi Huerto</h2>
+<h2>🌿 Mi Huerto</h2>
 <div id="huerto"></div>
 </div>
 
-<h2 style="margin-left:10px;">Catálogo de Cultivos</h2>
+<h2 style="margin-left:10px;">📚 Catálogo de Cultivos</h2>
 
-<input id="busqueda" placeholder="Buscar cultivo..." onkeyup="mostrarCatalogo()">
+<input id="busqueda" placeholder="🔍 Buscar cultivo..." onkeyup="mostrarCatalogo()">
 
 <div id="catalogo"></div>
 
 <script>
 
 const plantas = [
-{ id:1, nombre:"Maíz", tipo:"Grano", riego:"Moderado", sol:"Pleno sol", tierra:"Fértil", composta:"Alta", germinacion:"5–10 días" },
-{ id:2, nombre:"Frijol", tipo:"Grano", riego:"Moderado", sol:"Sol", tierra:"Suelta", composta:"Media", germinacion:"5–8 días" },
-{ id:3, nombre:"Trigo", tipo:"Grano", riego:"Bajo", sol:"Sol", tierra:"Fértil", composta:"Media", germinacion:"7–10 días" },
+{
+id:1,
+nombre:"Maíz 🌽",
+tipo:"Grano",
+riego:"💧 Moderado constante (sin encharcar)",
+sol:"☀️ Pleno sol",
+tierra:"🌱 Fértil, profunda y aireada",
+composta:"♻️ Alta (le encanta el nitrógeno)",
+germinacion:"⏳ 5–10 días",
+tips:"💡 Necesita espacio para crecer alto. Plántalo separado de otras plantas.",
+warning:"⚠️ No tolera suelos secos prolongados."
+},
 
-{ id:4, nombre:"Jitomate", tipo:"Verdura", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"5–10 días" },
-{ id:5, nombre:"Lechuga", tipo:"Verdura", riego:"Frecuente", sol:"Semisombra", tierra:"Suelta", composta:"Alta", germinacion:"5–10 días" },
-{ id:6, nombre:"Zanahoria", tipo:"Verdura", riego:"Moderado", sol:"Sol", tierra:"Profunda", composta:"Media", germinacion:"10–20 días" },
+{
+id:2,
+nombre:"Frijol 🫘",
+tipo:"Grano",
+riego:"💧 Moderado",
+sol:"☀️ Sol directo",
+tierra:"🌱 Suelta y ligera",
+composta:"♻️ Media",
+germinacion:"⏳ 5–8 días",
+tips:"💡 Ayuda a mejorar el suelo porque fija nitrógeno.",
+warning:"⚠️ Evita exceso de agua o se pudren las raíces."
+},
 
-{ id:7, nombre:"Mango", tipo:"Fruta", riego:"Moderado", sol:"Sol directo", tierra:"Arenosa", composta:"Alta", germinacion:"2–4 semanas" },
-{ id:8, nombre:"Manzana", tipo:"Fruta", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"2–4 semanas" },
-{ id:9, nombre:"Sandía", tipo:"Fruta", riego:"Abundante", sol:"Sol", tierra:"Arenosa", composta:"Alta", germinacion:"4–8 días" },
+{
+id:3,
+nombre:"Trigo 🌾",
+tipo:"Grano",
+riego:"💧 Bajo",
+sol:"☀️ Mucho sol",
+tierra:"🌱 Fértil y drenada",
+composta:"♻️ Media",
+germinacion:"⏳ 7–10 días",
+tips:"💡 Resiste bien climas secos.",
+warning:"⚠️ No soporta suelos encharcados."
+},
 
-{ id:10, nombre:"Café", tipo:"Árbol", riego:"Regular", sol:"Sombra", tierra:"Ácida", composta:"Alta", germinacion:"30–60 días" },
-{ id:11, nombre:"Cacao", tipo:"Árbol", riego:"Constante", sol:"Sombra", tierra:"Húmeda", composta:"Alta", germinacion:"7–21 días" },
+{
+id:4,
+nombre:"Jitomate 🍅",
+tipo:"Verdura",
+riego:"💧 Moderado constante",
+sol:"☀️ 6–8 horas de sol",
+tierra:"🌱 Fértil y ligera",
+composta:"♻️ Alta",
+germinacion:"⏳ 5–10 días",
+tips:"💡 Necesita tutores para sostenerse cuando crece.",
+warning:"⚠️ Sensible a plagas si hay mucha humedad."
+},
 
-{ id:12, nombre:"Agave", tipo:"Resistente", riego:"Bajo", sol:"Sol", tierra:"Arenosa", composta:"Baja", germinacion:"2–4 semanas" }
+{
+id:5,
+nombre:"Lechuga 🥬",
+tipo:"Verdura",
+riego:"💧 Frecuente",
+sol:"🌤️ Semisombra",
+tierra:"🌱 Suelta y fresca",
+composta:"♻️ Alta",
+germinacion:"⏳ 5–10 días",
+tips:"💡 Crece mejor en clima fresco.",
+warning:"⚠️ El calor extremo la amarga."
+},
+
+{
+id:6,
+nombre:"Zanahoria 🥕",
+tipo:"Verdura",
+riego:"💧 Moderado",
+sol:"☀️ Sol directo",
+tierra:"🌱 Profunda y sin piedras",
+composta:"♻️ Media",
+germinacion:"⏳ 10–20 días",
+tips:"💡 La tierra debe estar muy suelta o salen deformes.",
+warning:"⚠️ No mover el suelo mientras crece."
+},
+
+{
+id:7,
+nombre:"Mango 🥭",
+tipo:"Fruta",
+riego:"💧 Moderado",
+sol:"☀️ Sol directo",
+tierra:"🌱 Arenosa y drenada",
+composta:"♻️ Alta",
+germinacion:"⏳ 2–4 semanas",
+tips:"💡 Árbol grande, necesita espacio.",
+warning:"⚠️ Crecimiento lento al inicio."
+},
+
+{
+id:8,
+nombre:"Sandía 🍉",
+tipo:"Fruta",
+riego:"💧 Abundante",
+sol:"☀️ Mucho sol",
+tierra:"🌱 Arenosa",
+composta:"♻️ Alta",
+germinacion:"⏳ 4–8 días",
+tips:"💡 Necesita espacio para extenderse.",
+warning:"⚠️ Sin sol no produce frutas dulces."
+},
+
+{
+id:9,
+nombre:"Café ☕",
+tipo:"Árbol",
+riego:"💧 Regular",
+sol:"🌤️ Sombra parcial",
+tierra:"🌱 Ácida y rica en materia orgánica",
+composta:"♻️ Alta",
+germinacion:"⏳ 30–60 días",
+tips:"💡 Crece lento pero estable.",
+warning:"⚠️ No tolera sol directo fuerte."
+}
 ];
 
 function guardarPerfil(){
@@ -70,7 +171,7 @@ function guardarPerfil(){
     localStorage.setItem("ubicacion", ubicacion);
 
     document.getElementById("saludo").innerText =
-    "Hola " + nombre + " desde " + ubicacion;
+    "👋 Hola " + nombre + " desde " + ubicacion;
 }
 
 function mostrarCatalogo(){
@@ -85,15 +186,19 @@ function mostrarCatalogo(){
 
         div.innerHTML += `
         <div class="cultivo">
-            <h3>${p.nombre} (${p.tipo})</h3>
-            <p>💧 ${p.riego}</p>
-            <p>☀️ ${p.sol}</p>
-            <p>🌱 ${p.tierra}</p>
-            <p>♻️ ${p.composta}</p>
-            <p>⏳ ${p.germinacion}</p>
+            <h3>${p.nombre}</h3>
+
+            <p>${p.riego}</p>
+            <p>${p.sol}</p>
+            <p>${p.tierra}</p>
+            <p>${p.composta}</p>
+            <p>${p.germinacion}</p>
+
+            <p>💡 ${p.tips}</p>
+            <p>⚠️ ${p.warning}</p>
 
             <button onclick="agregar(${p.id})">
-                Agregar al huerto
+                ➕ Agregar al huerto
             </button>
         </div>
         `;
@@ -133,28 +238,20 @@ function mostrarHuerto(){
         div.innerHTML += `
         <div class="cultivo">
             <h3>${p.nombre}</h3>
-            <p>💧 ${p.riego}</p>
-            <p>☀️ ${p.sol}</p>
-            <p>🌱 ${p.tierra}</p>
-            <p>♻️ ${p.composta}</p>
-            <p>⏳ ${p.germinacion}</p>
+            <p>${p.riego}</p>
+            <p>${p.sol}</p>
+            <p>${p.tierra}</p>
+            <p>${p.composta}</p>
+            <p>${p.germinacion}</p>
             <p>📅 ${p.fecha}</p>
 
-            <button onclick="eliminar('${p.nombre}')">Eliminar</button>
+            <button onclick="eliminar('${p.nombre}')">🗑️ Eliminar</button>
         </div>
         `;
     });
 }
 
 window.onload = function(){
-    let nombre = localStorage.getItem("nombre");
-    let ubicacion = localStorage.getItem("ubicacion");
-
-    if(nombre){
-        document.getElementById("saludo").innerText =
-        "Hola " + nombre + " desde " + ubicacion;
-    }
-
     mostrarCatalogo();
     mostrarHuerto();
 }
