@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>🌱 Huerto Inteligente Informativo</title>
+<title>🌱 Huerto Inteligente Completo</title>
 
 <style>
 body { font-family: Arial; background:#f0f8f5; }
@@ -10,13 +10,14 @@ h1 { color: green; }
 .seccion { background:white; padding:10px; margin:10px; border-radius:10px; }
 .cultivo { border:1px solid #ccc; padding:10px; margin:10px; background:white; }
 button { margin-top:5px; cursor:pointer; }
-.info { font-size:13px; line-height:1.5; color:#333; }
+.info { font-size:13px; line-height:1.4; color:#333; }
+input { padding:5px; margin:5px; }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Huerto Inteligente (Guía Profesional)</h1>
+<h1>🌱 Mi Huerto Inteligente (25 Plantas)</h1>
 
 <div class="seccion">
 <h2>👤 Perfil</h2>
@@ -31,8 +32,7 @@ button { margin-top:5px; cursor:pointer; }
 <div id="huerto"></div>
 </div>
 
-<h2 style="margin-left:10px;">📚 Catálogo de Cultivos</h2>
-
+<h2 style="margin-left:10px;">📚 Catálogo</h2>
 <input id="busqueda" placeholder="🔍 Buscar cultivo..." onkeyup="mostrarCatalogo()">
 
 <div id="catalogo"></div>
@@ -40,172 +40,143 @@ button { margin-top:5px; cursor:pointer; }
 <script>
 
 const plantas = [
-{
-id:1,
-nombre:"Maíz 🌽",
-agua:"💧 25–40 mm por semana (riego profundo)",
-sol:"☀️ 6–8 horas diarias de sol directo",
-suelo:"🌍 Franco-arenoso, profundo, bien drenado, pH 6.0–7.0",
-fertilizante:"🧪 Alto en nitrógeno (N) al inicio, luego fósforo (P) y potasio (K)",
-info:"Planta de crecimiento alto que requiere espacio y nutrientes constantes."
-},
 
-{
-id:2,
-nombre:"Frijol 🫘",
-agua:"💧 20–30 mm por semana, evitar encharcamientos",
-sol:"☀️ 5–7 horas de sol",
-suelo:"🌍 Suelto, ligero, buen drenaje, pH 6.0–7.5",
-fertilizante:"🧪 Bajo fertilizante, ya que fija nitrógeno naturalmente",
-info:"Mejora el suelo gracias a su capacidad de fijar nitrógeno."
-},
+{ id:1, nombre:"Maíz 🌽", riego:"Moderado", sol:"6–8h sol directo", suelo:"Fértil y profundo", composta:"Alta", germ:"5–10 días",
+info:"Planta básica de milpa, requiere nutrientes constantes y espacio." },
 
-{
-id:3,
-nombre:"Jitomate 🍅",
-agua:"💧 30–50 mm por semana, riego constante sin exceso",
-sol:"☀️ 6–8 horas de sol directo",
-suelo:"🌍 Rico en materia orgánica, bien drenado, pH 6.0–6.8",
-fertilizante:"🧪 Alto en potasio y fósforo para floración y fruto",
-info:"Muy sensible a cambios bruscos de humedad."
-},
+{ id:2, nombre:"Frijol 🫘", riego:"Moderado", sol:"5–7h sol", suelo:"Suelto y aireado", composta:"Media", germ:"5–8 días",
+info:"Fija nitrógeno en el suelo, mejora la tierra naturalmente." },
 
-{
-id:4,
-nombre:"Lechuga 🥬",
-agua:"💧 25–35 mm por semana, mantener suelo húmedo",
-sol:"☀️ 3–5 horas o semisombra",
-suelo:"🌍 Suelto, fresco, rico en humus, pH 6.0–7.0",
-fertilizante:"🧪 Moderado en nitrógeno",
-info:"Crece mejor en climas frescos, el calor la amarga."
-},
+{ id:3, nombre:"Trigo 🌾", riego:"Bajo", sol:"6h sol", suelo:"Fértil y drenado", composta:"Media", germ:"7–10 días",
+info:"Grano resistente usado en climas templados." },
 
-{
-id:5,
-nombre:"Zanahoria 🥕",
-agua:"💧 20–30 mm por semana",
-sol:"☀️ 6 horas de sol",
-suelo:"🌍 Profundo, sin piedras, suelto, pH 6.0–6.8",
-fertilizante:"🧪 Bajo nitrógeno, alto en potasio",
-info:"El suelo debe estar completamente suelto para raíces rectas."
-},
+{ id:4, nombre:"Arroz 🍚", riego:"Alto (inundación parcial)", sol:"6–8h sol", suelo:"Arcilloso húmedo", composta:"Alta", germ:"7–14 días",
+info:"Cultivo de zonas húmedas, necesita mucha agua." },
 
-{
-id:6,
-nombre:"Mango 🥭",
-agua:"💧 40–60 mm por semana (árbol joven más frecuente)",
-sol:"☀️ 8 horas de sol directo",
-suelo:"🌍 Arenoso-limoso, profundo, pH 5.5–7.5",
-fertilizante:"🧪 Rico en potasio y micronutrientes",
-info:"Árbol tropical de crecimiento lento pero estable."
-},
+{ id:5, nombre:"Sorgo 🌾", riego:"Bajo", sol:"Sol intenso", suelo:"Resistente y variado", composta:"Media", germ:"5–10 días",
+info:"Resiste sequía, ideal para climas secos." },
 
-{
-id:7,
-nombre:"Sandía 🍉",
-agua:"💧 40–70 mm por semana (más en fructificación)",
-sol:"☀️ 8–10 horas de sol",
-suelo:"🌍 Arenoso, ligero, muy drenado, pH 6.0–6.8",
-fertilizante:"🧪 Alto en potasio para frutos dulces",
-info:"Necesita espacio amplio para expandirse."
-}
+{ id:6, nombre:"Aguacate 🥑", riego:"Moderado", sol:"6–8h sol", suelo:"Suelto y drenado", composta:"Alta", germ:"2–6 semanas",
+info:"Árbol sensible al exceso de agua." },
+
+{ id:7, nombre:"Mango 🥭", riego:"Moderado", sol:"Sol directo", suelo:"Arenoso-limoso", composta:"Alta", germ:"2–4 semanas",
+info:"Árbol tropical de crecimiento lento." },
+
+{ id:8, nombre:"Plátano 🍌", riego:"Alto", sol:"6–8h sol", suelo:"Fértil húmedo", composta:"Alta", germ:"1–3 meses",
+info:"Requiere mucha agua y nutrientes." },
+
+{ id:9, nombre:"Naranja 🍊", riego:"Moderado", sol:"Sol", suelo:"Ligeramente ácido", composta:"Alta", germ:"2–6 semanas",
+info:"Cítrico resistente con buena producción." },
+
+{ id:10, nombre:"Limón 🍋", riego:"Moderado", sol:"6–8h sol", suelo:"Drenado ácido", composta:"Alta", germ:"10–20 días",
+info:"Fruto ácido muy usado en cocina." },
+
+{ id:11, nombre:"Jitomate 🍅", riego:"Constante", sol:"6–8h sol", suelo:"Rico en nutrientes", composta:"Alta", germ:"5–10 días",
+info:"Muy sensible a plagas y cambios de agua." },
+
+{ id:12, nombre:"Cebolla 🧅", riego:"Moderado", sol:"Sol", suelo:"Suelto", composta:"Media", germ:"7–12 días",
+info:"Crece mejor en suelos ligeros." },
+
+{ id:13, nombre:"Chile 🌶️", riego:"Moderado", sol:"Sol intenso", suelo:"Fértil", composta:"Alta", germ:"7–14 días",
+info:"Necesita calor para buen sabor." },
+
+{ id:14, nombre:"Lechuga 🥬", riego:"Frecuente", sol:"Semisombra", suelo:"Suelto", composta:"Alta", germ:"5–10 días",
+info:"Se espiga con calor excesivo." },
+
+{ id:15, nombre:"Zanahoria 🥕", riego:"Moderado", sol:"Sol", suelo:"Profundo sin piedras", composta:"Media", germ:"10–20 días",
+info:"Raíz sensible a compactación." },
+
+{ id:16, nombre:"Caña de azúcar 🎋", riego:"Alto", sol:"Sol total", suelo:"Fértil profundo", composta:"Alta", germ:"7–14 días",
+info:"Se reproduce por tallos, no semillas." },
+
+{ id:17, nombre:"Café ☕", riego:"Regular", sol:"Sombra parcial", suelo:"Ácido", composta:"Alta", germ:"30–60 días",
+info:"Cultivo de crecimiento lento." },
+
+{ id:18, nombre:"Cacao 🍫", riego:"Constante", sol:"Sombra", suelo:"Húmedo fértil", composta:"Alta", germ:"7–21 días",
+info:"Base del chocolate." },
+
+{ id:19, nombre:"Algodón 🧵", riego:"Moderado", sol:"Sol", suelo:"Fértil", composta:"Media", germ:"7–10 días",
+info:"Usado para fibras textiles." },
+
+{ id:20, nombre:"Aloe vera 🌿", riego:"Bajo", sol:"Sol", suelo:"Arenoso", composta:"Baja", germ:"2–3 semanas",
+info:"Planta medicinal resistente." },
+
+{ id:21, nombre:"Alfalfa 🌱", riego:"Moderado", sol:"Sol", suelo:"Fértil", composta:"Media", germ:"7–10 días",
+info:"Usada como forraje." },
+
+{ id:22, nombre:"Agave 🌵", riego:"Muy bajo", sol:"Sol", suelo:"Arenoso", composta:"Baja", germ:"2–4 semanas",
+info:"Resistente a sequía extrema." },
+
+{ id:23, nombre:"Papaya 🍈", riego:"Moderado", sol:"Sol", suelo:"Ligero", composta:"Alta", germ:"2–4 semanas",
+info:"Crecimiento rápido tropical." },
+
+{ id:24, nombre:"Sandía 🍉", riego:"Alto", sol:"8h sol", suelo:"Arenoso", composta:"Alta", germ:"4–8 días",
+info:"Fruto grande y jugoso." },
+
+{ id:25, nombre:"Calabaza 🎃", riego:"Constante", sol:"6h sol", suelo:"Fértil", composta:"Alta", germ:"5–10 días",
+info:"Planta expansiva de crecimiento rápido." }
+
 ];
 
 // 👤 PERFIL
 function guardarPerfil(){
-    let nombre = document.getElementById("nombre").value;
-    let ubicacion = document.getElementById("ubicacion").value;
-
-    localStorage.setItem("nombre", nombre);
-    localStorage.setItem("ubicacion", ubicacion);
-
-    document.getElementById("saludo").innerText =
-    "👋 Hola " + nombre + " desde " + ubicacion;
+    let n=document.getElementById("nombre").value;
+    let u=document.getElementById("ubicacion").value;
+    localStorage.setItem("nombre",n);
+    localStorage.setItem("ubicacion",u);
+    document.getElementById("saludo").innerText="👋 Hola "+n+" desde "+u;
 }
 
 // 📚 CATÁLOGO
 function mostrarCatalogo(){
-    let div = document.getElementById("catalogo");
-    let filtro = document.getElementById("busqueda").value.toLowerCase();
+    let div=document.getElementById("catalogo");
+    let f=document.getElementById("busqueda").value.toLowerCase();
+    div.innerHTML="";
 
-    div.innerHTML = "";
-
-    plantas
-    .filter(p => p.nombre.toLowerCase().includes(filtro))
-    .forEach(p => {
-
-        div.innerHTML += `
+    plantas.filter(p=>p.nombre.toLowerCase().includes(f))
+    .forEach(p=>{
+        div.innerHTML+=`
         <div class="cultivo">
             <h3>${p.nombre}</h3>
-
             <div class="info">
-                <p>${p.info}</p>
-                <p>${p.agua}</p>
-                <p>${p.sol}</p>
-                <p>${p.suelo}</p>
-                <p>${p.fertilizante}</p>
+            💧 ${p.riego}<br>
+            ☀️ ${p.sol}<br>
+            🌍 ${p.suelo}<br>
+            🧪 ${p.composta}<br>
+            ⏳ Germinación: ${p.germ}<br><br>
+            ${p.info}
             </div>
 
-            <button onclick="agregar(${p.id})">
-                ➕ Agregar al huerto
-            </button>
-        </div>
-        `;
+            <button onclick="agregar(${p.id})">➕ Agregar</button>
+        </div>`;
     });
 }
 
-// ➕ AGREGAR
+// ➕ HUERTO
 function agregar(id){
-    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
-
-    let planta = plantas.find(p => p.id === id);
-
-    huerto.push({
-        ...planta,
-        fecha: new Date().toLocaleDateString()
-    });
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-// 🗑️ ELIMINAR
-function eliminar(nombre){
-    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
-
-    huerto = huerto.filter(p => p.nombre !== nombre);
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
+    let h=JSON.parse(localStorage.getItem("huerto")||"[]");
+    h.push({...plantas.find(p=>p.id===id),fecha:new Date().toLocaleDateString()});
+    localStorage.setItem("huerto",JSON.stringify(h));
     mostrarHuerto();
 }
 
 // 🌿 HUERTO
 function mostrarHuerto(){
-    let div = document.getElementById("huerto");
-    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
+    let d=document.getElementById("huerto");
+    let h=JSON.parse(localStorage.getItem("huerto")||"[]");
+    d.innerHTML="";
 
-    div.innerHTML = "";
-
-    huerto.forEach(p => {
-        div.innerHTML += `
+    h.forEach(p=>{
+        d.innerHTML+=`
         <div class="cultivo">
-            <h3>${p.nombre}</h3>
-            <div class="info">
-                <p>${p.info}</p>
-                <p>${p.agua}</p>
-                <p>${p.sol}</p>
-                <p>${p.suelo}</p>
-                <p>${p.fertilizante}</p>
-            </div>
-            <p>📅 ${p.fecha}</p>
-
-            <button onclick="eliminar('${p.nombre}')">🗑️ Eliminar</button>
-        </div>
-        `;
+        <h3>${p.nombre}</h3>
+        <div class="info">${p.info}</div>
+        <p>📅 ${p.fecha}</p>
+        </div>`;
     });
 }
 
-window.onload = function(){
+window.onload=function(){
     mostrarCatalogo();
     mostrarHuerto();
 }
