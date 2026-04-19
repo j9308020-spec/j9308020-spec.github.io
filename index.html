@@ -5,14 +5,17 @@
 <title>Cuidado de Cultivos</title>
 
 <style>
-body { font-family: Arial; background:#f0f8f5; }
+body { font-family: Arial; background-color: #f0f8f5; }
 h1 { color: green; }
-.seccion { background:white; padding:10px; margin:10px; border-radius:10px; }
-.cultivo { border:1px solid #ccc; padding:10px; margin:10px; border-radius:10px; }
-button { margin-top:5px; cursor:pointer; }
-input { padding:5px; margin:5px; }
-</style>
+.seccion { background: white; padding: 10px; margin: 10px; border-radius: 10px; }
+.cultivo { border: 1px solid #ccc; padding: 10px; margin: 10px; background: white; }
+button { margin-top: 5px; }
 
+input {
+    padding: 5px;
+    margin: 5px;
+}
+</style>
 </head>
 
 <body>
@@ -20,7 +23,7 @@ input { padding:5px; margin:5px; }
 <h1>🌱 Mi Huerto Inteligente</h1>
 
 <div class="seccion">
-<h2>Perfil 👤</h2>
+<h2>Perfil</h2>
 <input id="nombre" placeholder="Nombre">
 <input id="ubicacion" placeholder="Ubicación">
 <button onclick="guardarPerfil()">Guardar</button>
@@ -28,132 +31,132 @@ input { padding:5px; margin:5px; }
 </div>
 
 <div class="seccion">
-<h2>Agregar planta ➕</h2>
-<input id="newName" placeholder="Nombre planta">
-<input id="newType" placeholder="Tipo">
-<button onclick="agregarPlanta()">Agregar</button>
-</div>
-
-<div class="seccion">
-<h2>Mi Huerto 🌿</h2>
+<h2>Mi Huerto</h2>
 <div id="huerto"></div>
 </div>
 
-<h2 style="margin-left:10px;">Catálogo 📚</h2>
-<input id="busqueda" placeholder="Buscar..." onkeyup="mostrarCatalogo()">
+<h2 style="margin-left:10px;">Catálogo de Cultivos</h2>
+
+<input id="busqueda" placeholder="Buscar cultivo..." onkeyup="mostrarCatalogo()">
+
 <div id="catalogo"></div>
 
 <script>
 
-let plantas = [
-{ nombre:"Maíz 🌽", tipo:"Grano", riego:"2–3/semana", luz:"8–10h" },
-{ nombre:"Frijol 🫘", tipo:"Grano", riego:"2/semana", luz:"6–8h" },
-{ nombre:"Trigo 🌾", tipo:"Grano", riego:"1–2/semana", luz:"6–8h" },
-{ nombre:"Arroz 🍚", tipo:"Grano", riego:"alto", luz:"6–8h" },
-{ nombre:"Sorgo 🌾", tipo:"Grano", riego:"bajo", luz:"8–10h" },
-{ nombre:"Aguacate 🥑", tipo:"Fruta", riego:"2–3/semana", luz:"6–8h" },
-{ nombre:"Mango 🥭", tipo:"Fruta", riego:"moderado", luz:"8–10h" },
-{ nombre:"Plátano 🍌", tipo:"Fruta", riego:"alto", luz:"5–8h" },
-{ nombre:"Naranja 🍊", tipo:"Fruta", riego:"moderado", luz:"6–8h" },
-{ nombre:"Limón 🍋", tipo:"Fruta", riego:"moderado", luz:"6–8h" },
-{ nombre:"Papaya 🍈", tipo:"Fruta", riego:"medio", luz:"8–10h" },
-{ nombre:"Sandía 🍉", tipo:"Fruta", riego:"medio", luz:"8–10h" },
-{ nombre:"Guayaba 🍐", tipo:"Fruta", riego:"medio", luz:"6–8h" },
-{ nombre:"Tuna 🌵", tipo:"Fruta", riego:"bajo", luz:"8–10h" },
-{ nombre:"Pitaya 🌵", tipo:"Fruta", riego:"bajo", luz:"8–10h" },
-{ nombre:"Zapote", tipo:"Fruta", riego:"medio", luz:"6–8h" },
-{ nombre:"Mamey", tipo:"Fruta", riego:"medio", luz:"6–8h" },
-{ nombre:"Chicozapote", tipo:"Fruta", riego:"medio", luz:"6–8h" },
-{ nombre:"Guanábana", tipo:"Fruta", riego:"alto", luz:"5–7h" },
-{ nombre:"Tejocote", tipo:"Fruta", riego:"medio", luz:"6–8h" },
-{ nombre:"Xoconostle 🌵", tipo:"Fruta", riego:"muy bajo", luz:"8–10h" },
+const plantas = [
+{ nombre:"Maíz", tipo:"Grano", riego:"Moderado", sol:"Pleno sol", tierra:"Fértil", composta:"Alta", germinacion:"5–10 días" },
+{ nombre:"Frijol", tipo:"Grano", riego:"Moderado", sol:"Sol", tierra:"Suelta", composta:"Media", germinacion:"5–8 días" },
+{ nombre:"Trigo", tipo:"Grano", riego:"Bajo", sol:"Sol", tierra:"Fértil", composta:"Media", germinacion:"7–10 días" },
 
-{ nombre:"Jitomate 🍅", tipo:"Verdura", riego:"3–4/semana", luz:"6–8h" },
-{ nombre:"Lechuga 🥬", tipo:"Verdura", riego:"alto", luz:"4–6h" },
-{ nombre:"Zanahoria 🥕", tipo:"Verdura", riego:"medio", luz:"6–8h" },
-{ nombre:"Cebolla 🧅", tipo:"Verdura", riego:"medio", luz:"6–8h" },
-{ nombre:"Chile 🌶️", tipo:"Verdura", riego:"medio", luz:"8–10h" },
-{ nombre:"Calabaza 🎃", tipo:"Verdura", riego:"medio", luz:"8–10h" },
-{ nombre:"Nopal 🌵", tipo:"Verdura", riego:"muy bajo", luz:"8–10h" },
-{ nombre:"Espinaca 🥬", tipo:"Verdura", riego:"alto", luz:"4–6h" },
-{ nombre:"Acelga 🥬", tipo:"Verdura", riego:"alto", luz:"5–7h" },
-{ nombre:"Rábano 🔴", tipo:"Verdura", riego:"medio", luz:"6–8h" },
-{ nombre:"Ejote 🫛", tipo:"Verdura", riego:"medio", luz:"6–8h" },
-{ nombre:"Berro 🌿", tipo:"Verdura", riego:"alto", luz:"4–6h" },
-{ nombre:"Col 🥬", tipo:"Verdura", riego:"medio", luz:"6–8h" },
-{ nombre:"Brócoli 🥦", tipo:"Verdura", riego:"medio", luz:"6–8h" },
-{ nombre:"Coliflor 🥦", tipo:"Verdura", riego:"medio", luz:"6–8h" },
+{ nombre:"Jitomate", tipo:"Verdura", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"5–10 días" },
+{ nombre:"Lechuga", tipo:"Verdura", riego:"Frecuente", sol:"Semisombra", tierra:"Suelta", composta:"Alta", germinacion:"5–10 días" },
+{ nombre:"Zanahoria", tipo:"Verdura", riego:"Moderado", sol:"Sol", tierra:"Profunda", composta:"Media", germinacion:"10–20 días" },
 
-{ nombre:"Perejil 🌿", tipo:"Hierba", riego:"medio", luz:"4–6h" },
-{ nombre:"Cilantro 🌿", tipo:"Hierba", riego:"medio", luz:"4–6h" },
+{ nombre:"Mango", tipo:"Fruta", riego:"Moderado", sol:"Sol directo", tierra:"Arenosa", composta:"Alta", germinacion:"2–4 semanas" },
+{ nombre:"Manzana", tipo:"Fruta", riego:"Moderado", sol:"Sol", tierra:"Fértil", composta:"Alta", germinacion:"2–4 semanas" },
+{ nombre:"Sandía", tipo:"Fruta", riego:"Abundante", sol:"Sol", tierra:"Arenosa", composta:"Alta", germinacion:"4–8 días" },
 
-{ nombre:"Quelite 🌱", tipo:"Silvestre", riego:"bajo", luz:"6–8h" },
+{ nombre:"Café", tipo:"Árbol", riego:"Regular", sol:"Sombra", tierra:"Ácida", composta:"Alta", germinacion:"30–60 días" },
+{ nombre:"Cacao", tipo:"Árbol", riego:"Constante", sol:"Sombra", tierra:"Húmeda", composta:"Alta", germinacion:"7–21 días" },
 
-{ nombre:"Caña 🎋", tipo:"Industrial", riego:"alto", luz:"8–10h" },
-{ nombre:"Algodón", tipo:"Fibra", riego:"medio", luz:"8–10h" },
-{ nombre:"Café ☕", tipo:"Árbol", riego:"medio", luz:"4–6h" },
-{ nombre:"Cacao 🍫", tipo:"Árbol", riego:"alto", luz:"4–6h" },
-
-{ nombre:"Aloe Vera 🌿", tipo:"Medicinal", riego:"bajo", luz:"8–10h" },
-{ nombre:"Alfalfa", tipo:"Forraje", riego:"medio", luz:"6–8h" },
-{ nombre:"Agave 🌵", tipo:"Resistente", riego:"muy bajo", luz:"8–10h" },
-
-{ nombre:"Chía", tipo:"Semilla", riego:"bajo", luz:"6–8h" },
-{ nombre:"Amaranto", tipo:"Semilla", riego:"bajo", luz:"6–8h" },
-{ nombre:"Cacahuate 🥜", tipo:"Semilla", riego:"medio", luz:"6–8h" },
-
-{ nombre:"Haba 🫘", tipo:"Semilla", riego:"medio", luz:"6–8h" },
-{ nombre:"Maíz azul 🌽", tipo:"Grano", riego:"medio", luz:"8–10h" },
-{ nombre:"Huauzontle 🌿", tipo:"Semilla", riego:"bajo", luz:"6–8h" }
+{ nombre:"Agave", tipo:"Resistente", riego:"Bajo", sol:"Sol", tierra:"Arenosa", composta:"Baja", germinacion:"2–4 semanas" }
 ];
 
-function render(){
-  const cont = document.getElementById("catalogo");
-  cont.innerHTML = "";
-  plantas.forEach((p,i)=>{
-    cont.innerHTML += `
-      <div class="cultivo">
-        <b>${p.nombre}</b><br>
-        Tipo: ${p.tipo}<br>
-        Riego: ${p.riego}<br>
-        Luz: ${p.luz}<br>
-        <button onclick="eliminar(${i})">Eliminar ❌</button>
-      </div>
-    `;
-  });
-}
-
-function agregarPlanta(){
-  const n = document.getElementById("newName").value;
-  const t = document.getElementById("newType").value;
-  if(!n) return;
-  plantas.push({nombre:n+" 🌱", tipo:t, riego:"-", luz:"-"});
-  render();
-}
-
-function eliminar(i){
-  plantas.splice(i,1);
-  render();
-}
-
 function guardarPerfil(){
-  const n=document.getElementById("nombre").value;
-  const u=document.getElementById("ubicacion").value;
-  document.getElementById("saludo").innerText =
-  `Hola ${n}, huerto listo en ${u} 🌱`;
+    let nombre = document.getElementById("nombre").value;
+    let ubicacion = document.getElementById("ubicacion").value;
+
+    localStorage.setItem("nombre", nombre);
+    localStorage.setItem("ubicacion", ubicacion);
+
+    document.getElementById("saludo").innerText =
+    "Hola " + nombre + " desde " + ubicacion;
 }
 
 function mostrarCatalogo(){
-  const txt=document.getElementById("busqueda").value.toLowerCase();
-  const cont=document.getElementById("huerto");
-  cont.innerHTML="";
-  plantas.filter(p=>p.nombre.toLowerCase().includes(txt))
-  .forEach(p=>{
-    cont.innerHTML += `<div class="cultivo">${p.nombre}</div>`;
-  });
+    let div = document.getElementById("catalogo");
+    let filtro = document.getElementById("busqueda").value.toLowerCase();
+
+    div.innerHTML = "";
+
+    plantas
+    .filter(p => p.nombre.toLowerCase().includes(filtro))
+    .forEach((p, index) => {
+
+        div.innerHTML += `
+        <div class="cultivo">
+            <h3>${p.nombre} (${p.tipo})</h3>
+            <p>💧 ${p.riego}</p>
+            <p>☀️ ${p.sol}</p>
+            <p>🌱 ${p.tierra}</p>
+            <p>♻️ ${p.composta}</p>
+            <p>⏳ ${p.germinacion}</p>
+
+            <button onclick="agregar(${index})">
+                Agregar al huerto
+            </button>
+        </div>
+        `;
+    });
 }
 
-render();
+function agregar(index){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    huerto.push({
+        ...plantas[index],
+        id: Date.now(),
+        fecha: new Date().toLocaleDateString()
+    });
+
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
+
+function eliminar(id){
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    huerto = huerto.filter(p => p.id !== id);
+
+    localStorage.setItem("huerto", JSON.stringify(huerto));
+    mostrarHuerto();
+}
+
+function mostrarHuerto(){
+    let div = document.getElementById("huerto");
+    let huerto = JSON.parse(localStorage.getItem("huerto")) || [];
+
+    div.innerHTML = "";
+
+    huerto.forEach((p) => {
+        div.innerHTML += `
+        <div class="cultivo">
+            <h3>${p.nombre}</h3>
+            <p>💧 ${p.riego}</p>
+            <p>☀️ ${p.sol}</p>
+            <p>🌱 ${p.tierra}</p>
+            <p>♻️ ${p.composta}</p>
+            <p>⏳ ${p.germinacion}</p>
+            <p>📅 ${p.fecha}</p>
+
+            <button onclick="eliminar(${p.id})">Eliminar</button>
+        </div>
+        `;
+    });
+}
+
+window.onload = function(){
+    let nombre = localStorage.getItem("nombre");
+    let ubicacion = localStorage.getItem("ubicacion");
+
+    if(nombre){
+        document.getElementById("saludo").innerText =
+        "Hola " + nombre + " desde " + ubicacion;
+    }
+
+    mostrarCatalogo();
+    mostrarHuerto();
+}
 
 </script>
 
