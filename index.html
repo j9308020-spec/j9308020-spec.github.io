@@ -2,375 +2,177 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Huerto Simulador PRO</title>
+<title>Cuidado de Cultivos</title>
 
 <style>
-body { font-family: Arial; background:#f0f8f5; }
+body{
+    font-family: Arial;
+    background:#f0f8f5;
+}
 
-h1 { color: green; }
+h1{
+    color:green;
+}
 
-.seccion {
+.seccion{
     background:white;
     margin:10px;
     padding:10px;
     border-radius:10px;
 }
 
-.cultivo, .item {
+.cultivo{
     border:1px solid #ccc;
-    padding:10px;
     margin:10px;
+    padding:10px;
+    border-radius:10px;
     background:white;
 }
 
-button {
-    margin:5px;
+input{
     padding:5px;
-    cursor:pointer;
+    margin:10px;
+    width:200px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Huerto Simulador PRO</h1>
+<h1>🌱 Cuidado de Cultivos</h1>
 
 <div class="seccion">
-<h2>🌦️ Clima</h2>
-<p id="clima"></p>
+<h2>🔎 Buscar cultivo</h2>
+<input id="busqueda" placeholder="Escribe un cultivo..." onkeyup="mostrar()">
 </div>
 
 <div class="seccion">
-<h2>💰 Dinero</h2>
-<p>$<span id="dinero">50</span></p>
-<p>Fertilizante: <span id="fertilizante">2</span></p>
-</div>
-
-<div class="seccion">
-<h2>🌱 Plantar</h2>
-<button onclick="plantar('Maíz 🌽')">🌽 Maíz</button>
-<button onclick="plantar('Frijol 🫘')">🫘 Frijol</button>
-<button onclick="plantar('Jitomate 🍅')">🍅 Jitomate</button>
-</div>
-
-<div class="seccion">
-<h2>⚙️ Acciones</h2>
-<button onclick="regar()">💧 Riego</button>
-<button onclick="fertilizar()">🧬 Fertilizar</button>
-</div>
-
-<div class="seccion">
-<h2>🏪 Tienda</h2>
-<button onclick="comprarFertilizante()">Comprar fertilizante ($10)</button>
-</div>
-
-<div class="seccion">
-<h2>📦 Inventario</h2>
-<div id="inventario"></div>
-</div>
-
-<div class="seccion">
-<h2>🌿 Huerto</h2>
-<div id="huerto"></div>
+<h2>📚 Catálogo de cultivos</h2>
+<div id="catalogo"></div>
 </div>
 
 <script>
 
-let dinero = 50;
-let fertilizante = 2;
-let cooldownRiego = false;
+const plantas = [
+{
+nombre:"Maíz 🌽",
+tipo:"Grano",
+riego:"Moderado",
+sol:"Pleno sol (6–8h)",
+tierra:"Fértil y drenada",
+composta:"Alta",
+germinacion:"5–10 días",
+descripcion:"Cereal básico de alimentación en muchas culturas."
+},
 
-let inventario = [];
+{
+nombre:"Frijol 🫘",
+tipo:"Leguminosa",
+riego:"Moderado",
+sol:"Pleno sol",
+tierra:"Suelta y aireada",
+composta:"Media",
+germinacion:"5–8 días",
+descripcion:"Aporta nitrógeno al suelo, mejora la fertilidad."
+},
 
-//
-// 🌦️ CLIMA
-//
-let climaActual = "normal ☁️";
-let efectoClima = 1;
+{
+nombre:"Jitomate 🍅",
+tipo:"Verdura",
+riego:"Moderado constante",
+sol:"Mucho sol",
+tierra:"Fértil y profunda",
+composta:"Alta",
+germinacion:"5–10 días",
+descripcion:"Uno de los cultivos más comunes en huertos caseros."
+},
 
-function cambiarClima(){
+{
+nombre:"Lechuga 🥬",
+tipo:"Verdura",
+riego:"Frecuente",
+sol:"Semisombra",
+tierra:"Suelta y húmeda",
+composta:"Alta",
+germinacion:"5–10 días",
+descripcion:"Crece rápido y se adapta a climas frescos."
+},
 
-    const clima = [
-        {t:"normal ☁️", w:0.6, e:1},
-        {t:"soleado ☀️", w:0.2, e:1.3},
-        {t:"lluvioso 🌧️", w:0.15, e:1.5},
-        {t:"seco 🔥", w:0.05, e:0.7}
-    ];
+{
+nombre:"Zanahoria 🥕",
+tipo:"Raíz",
+riego:"Moderado",
+sol:"Pleno sol",
+tierra:"Profunda y sin piedras",
+composta:"Media",
+germinacion:"10–20 días",
+descripcion:"Su crecimiento depende de un suelo suelto."
+},
 
-    let r = Math.random();
-    let acc = 0;
+{
+nombre:"Mango 🥭",
+tipo:"Fruta",
+riego:"Moderado",
+sol:"Sol directo",
+tierra:"Arenosa y drenada",
+composta:"Alta",
+germinacion:"2–4 semanas",
+descripcion:"Árbol tropical de crecimiento lento pero duradero."
+},
 
-    for(let c of clima){
-        acc += c.w;
-        if(r <= acc){
-            climaActual = c.t;
-            efectoClima = c.e;
-            break;
-        }
-    }
+{
+nombre:"Limón 🍋",
+tipo:"Fruta",
+riego:"Moderado",
+sol:"6–8h de sol",
+tierra:"Ligeramente ácida",
+composta:"Alta",
+germinacion:"10–20 días",
+descripcion:"Requiere cuidados constantes y buen drenaje."
+},
 
-    document.getElementById("clima").innerText = climaActual;
+{
+nombre:"Café ☕",
+tipo:"Árbol",
+riego:"Regular",
+sol:"Sombra parcial",
+tierra:"Ácida y rica",
+composta:"Alta",
+germinacion:"30–60 días",
+descripcion:"Cultivo tropical sensible a clima y suelo."
 }
+];
 
-//
-// 🌱 HUERTO
-//
-function getHuerto(){
-    return JSON.parse(localStorage.getItem("huerto") || "[]");
-}
+function mostrar(){
 
-function saveHuerto(h){
-    localStorage.setItem("huerto", JSON.stringify(h));
-}
-
-//
-// 🌱 PLANTAR
-//
-function plantar(nombre){
-    let h = getHuerto();
-
-    h.push({
-        nombre,
-        crecimiento:0,
-        listo:false,
-        plaga:false
-    });
-
-    saveHuerto(h);
-    render();
-}
-
-//
-// 💧 RIEGO
-//
-function regar(){
-
-    if(cooldownRiego){
-        alert("⏳ Espera un momento");
-        return;
-    }
-
-    cooldownRiego = true;
-    setTimeout(()=> cooldownRiego = false, 4000);
-
-    let h = getHuerto();
-
-    h.forEach(p=>{
-        if(!p.listo){
-            p.crecimiento += 0.3 * efectoClima;
-        }
-    });
-
-    saveHuerto(h);
-    render();
-}
-
-//
-// 🧬 FERTILIZAR
-//
-function fertilizar(){
-
-    if(fertilizante <= 0){
-        alert("Sin fertilizante");
-        return;
-    }
-
-    fertilizante--;
-
-    let h = getHuerto();
-
-    h.forEach(p=>{
-        if(!p.listo){
-            p.crecimiento += 0.8;
-            p.plaga = false;
-        }
-    });
-
-    saveHuerto(h);
-    render();
-}
-
-//
-// 🏪 TIENDA
-//
-function comprarFertilizante(){
-
-    if(dinero < 10){
-        alert("No tienes dinero");
-        return;
-    }
-
-    dinero -= 10;
-    fertilizante++;
-
-    render();
-}
-
-//
-// 🌱 CRECIMIENTO
-//
-function crecer(){
-
-    let h = getHuerto();
-
-    h.forEach(p=>{
-
-        if(p.plaga){
-            p.crecimiento -= 0.05;
-        } else {
-            p.crecimiento += 0.05 * efectoClima;
-        }
-
-        if(p.crecimiento < 0) p.crecimiento = 0;
-
-        if(p.crecimiento >= 1.5){
-            p.crecimiento = 1.5;
-            p.listo = true;
-        }
-    });
-
-    saveHuerto(h);
-}
-
-//
-// 🌾 COSECHAR
-//
-function cosechar(index){
-
-    let h = getHuerto();
-
-    let p = h[index];
-
-    if(p.listo){
-        inventario.push(p.nombre);
-        h.splice(index,1);
-    }
-
-    saveHuerto(h);
-    render();
-}
-
-//
-// 📦 INVENTARIO
-//
-function renderInventario(){
-
-    let div = document.getElementById("inventario");
-    div.innerHTML = "";
-
-    inventario.forEach((i,idx)=>{
-        div.innerHTML += `
-        <div class="item">
-            ${i}
-            <button onclick="vender(${idx})">Vender ($8)</button>
-        </div>
-        `;
-    });
-}
-
-//
-// 💰 VENDER
-//
-function vender(i){
-    dinero += 8;
-    inventario.splice(i,1);
-    render();
-}
-
-//
-// 🌿 RENDER
-//
-function render(){
-
-    let h = getHuerto();
-    let div = document.getElementById("huerto");
+    let div = document.getElementById("catalogo");
+    let filtro = document.getElementById("busqueda").value.toLowerCase();
 
     div.innerHTML = "";
 
-    h.forEach((p,index)=>{
+    plantas
+    .filter(p => p.nombre.toLowerCase().includes(filtro))
+    .forEach(p => {
+
         div.innerHTML += `
         <div class="cultivo">
             <h3>${p.nombre}</h3>
 
-            <p>${p.listo ? "🍅 LISTO" : "🌱 creciendo"}</p>
+            <p><b>Tipo:</b> ${p.tipo}</p>
+            <p><b>Riego:</b> ${p.riego}</p>
+            <p><b>Sol:</b> ${p.sol}</p>
+            <p><b>Tierra:</b> ${p.tierra}</p>
+            <p><b>Composta:</b> ${p.composta}</p>
+            <p><b>Germinación:</b> ${p.germinacion}</p>
 
-            <p>${p.crecimiento.toFixed(2)}</p>
-
-            ${p.listo ? `<button onclick="cosechar(${index})">🌾 Cosechar</button>` : ""}
-
-            <p>${p.plaga ? "💀 PLAGA" : "🌿 sano"}</p>
+            <p>${p.descripcion}</p>
         </div>
         `;
     });
-
-    document.getElementById("dinero").innerText = dinero;
-    document.getElementById("fertilizante").innerText = fertilizante;
-
-    renderInventario();
 }
 
-//
-// 💀 PLAGAS (EVENTO HORARIO SIMULADO)
-//
-function eventoPlagas(){
-
-    let h = getHuerto();
-
-    h.forEach(p=>{
-        if(!p.listo && Math.random() < 0.2){
-            p.plaga = true;
-        }
-    });
-
-    saveHuerto(h);
-}
-
-//
-// 🌪 EVENTOS RAROS (SEQUÍA / TORRENTAS)
-//
-function eventosClimaticos(){
-
-    let h = getHuerto();
-
-    let evento = Math.random();
-
-    if(evento < 0.1){
-        // sequía
-        h.forEach(p=> p.crecimiento -= 0.2);
-    }
-
-    if(evento > 0.9){
-        // tormenta
-        h.forEach(p=> p.crecimiento += 0.3);
-    }
-
-    saveHuerto(h);
-}
-
-//
-// 🔁 LOOP PRINCIPAL
-//
-setInterval(()=>{
-    cambiarClima();
-    crecer();
-    render();
-},3000);
-
-//
-// 🕒 EVENTOS “HORARIOS” SIMULADOS
-// (ajustado a 1 minuto para jugabilidad)
-//
-setInterval(()=>{
-    eventoPlagas();
-    eventosClimaticos();
-},60000);
-
-//
-// 🚀 INICIO
-//
 window.onload = function(){
-    cambiarClima();
-    render();
+    mostrar();
 }
 
 </script>
