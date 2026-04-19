@@ -2,41 +2,43 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>🌱 Huerto Inteligente FIX</title>
+<title>🌱 Huerto Inteligente FIX FINAL</title>
 
 <style>
 body { font-family: Arial; background:#f0f8f5; }
 h1 { color: green; }
 .cultivo { border:1px solid #ccc; padding:10px; margin:10px; background:white; }
-button { cursor:pointer; margin-top:5px; }
+button { margin-top:5px; cursor:pointer; }
 small { color:#555; }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Huerto Inteligente (ARREGLADO)</h1>
+<h1>🌱 Huerto Inteligente (FUNCIONANDO)</h1>
 
+<div id="catalogo"></div>
+<hr>
 <div id="huerto"></div>
 
 <script>
 
-// 🌱 cultivos (ejemplo reducido pero funcional)
+// 🌱 catálogo mínimo funcional (puedes volver a expandirlo después)
 const plantas = [
 { id:1, nombre:"Maíz 🌽", dias:10, info:"Base alimenticia de México" },
-{ id:2, nombre:"Frijol 🫘", dias:8, info:"Proteína vegetal esencial" },
-{ id:3, nombre:"Jitomate 🍅", dias:25, info:"Base de salsas mexicanas" },
+{ id:2, nombre:"Frijol 🫘", dias:8, info:"Proteína vegetal" },
+{ id:3, nombre:"Jitomate 🍅", dias:25, info:"Salsa mexicana" },
 { id:4, nombre:"Lechuga 🥬", dias:12, info:"Crecimiento rápido" },
-{ id:5, nombre:"Zanahoria 🥕", dias:20, info:"Raíz comestible dulce" }
+{ id:5, nombre:"Zanahoria 🥕", dias:20, info:"Raíz dulce" }
 ];
 
-// ➕ AGREGAR (FIX: fecha siempre válida + id único)
+// ➕ agregar planta
 function agregar(id){
     let h = JSON.parse(localStorage.getItem("huerto") || "[]");
 
     h.push({
         ...plantas.find(p => p.id === id),
-        uid: crypto.randomUUID(), // ID seguro
+        uid: crypto.randomUUID(),
         fecha: Date.now()
     });
 
@@ -44,9 +46,9 @@ function agregar(id){
     mostrarHuerto();
 }
 
-// 🗑️ ELIMINAR (ahora usa uid, no fecha)
+// 🗑️ eliminar planta
 function eliminar(uid){
-    if(!confirm("⚠️ ¿Eliminar este cultivo?")) return;
+    if(!confirm("¿Seguro que quieres eliminar este cultivo?")) return;
 
     let h = JSON.parse(localStorage.getItem("huerto") || "[]");
     h = h.filter(p => p.uid !== uid);
@@ -55,9 +57,9 @@ function eliminar(uid){
     mostrarHuerto();
 }
 
-// 🌱 ETAPAS SEGURAS
+// 🌱 etapas de crecimiento
 function etapa(dias, total){
-    if(!dias || !total) return "❓ Datos inválidos";
+    if(!total) return "❓";
 
     let r = dias / total;
 
@@ -65,31 +67,36 @@ function etapa(dias, total){
     if(r < 0.5) return "🌿 Brote";
     if(r < 0.8) return "🌾 Creciendo";
     if(r < 1) return "🌼 Casi listo";
-    return "🍅 Listo para cosecha";
+    return "🍅 Listo";
 }
 
-// 🌿 MOSTRAR HUERTO (con limpieza de datos corruptos)
+// 📚 mostrar catálogo
+function mostrarCatalogo(){
+    let d = document.getElementById("catalogo");
+    d.innerHTML = "<h2>📚 Catálogo</h2>";
+
+    plantas.forEach(p=>{
+        d.innerHTML += `
+        <div class="cultivo">
+            <h3>${p.nombre}</h3>
+            <small>${p.info}</small><br>
+            ⏳ ${p.dias} días aprox<br>
+            <button onclick="agregar(${p.id})">➕ Agregar</button>
+        </div>
+        `;
+    });
+}
+
+// 🌿 mostrar huerto
 function mostrarHuerto(){
     let d = document.getElementById("huerto");
     let h = JSON.parse(localStorage.getItem("huerto") || "[]");
 
-    // 🧹 limpiar basura (evita NaN y undefined)
-    h = h.filter(p =>
-        p &&
-        p.fecha &&
-        p.dias &&
-        p.uid &&
-        p.nombre
-    );
+    d.innerHTML = "<h2>🌿 Mi Huerto</h2>";
 
-    localStorage.setItem("huerto", JSON.stringify(h));
-
-    d.innerHTML = "";
-
-    h.forEach(p => {
+    h.forEach(p=>{
 
         let dias = Math.floor((Date.now() - p.fecha) / (1000*60*60*24));
-
         if(isNaN(dias)) dias = 0;
 
         d.innerHTML += `
@@ -97,7 +104,7 @@ function mostrarHuerto(){
             <h3>${p.nombre}</h3>
             <small>${p.info}</small><br><br>
 
-            📅 Plantado: ${new Date(p.fecha).toLocaleDateString()}<br>
+            📅 ${new Date(p.fecha).toLocaleDateString()}<br>
             ⏳ Días: ${dias}<br>
             🌱 Estado: ${etapa(dias, p.dias)}<br>
             📆 Total: ${p.dias} días<br>
@@ -106,10 +113,15 @@ function mostrarHuerto(){
         </div>
         `;
     });
+
+    if(h.length === 0){
+        d.innerHTML += "<p>🌱 No tienes cultivos todavía</p>";
+    }
 }
 
-// iniciar limpio
+// iniciar
 window.onload = function(){
+    mostrarCatalogo();
     mostrarHuerto();
 }
 
