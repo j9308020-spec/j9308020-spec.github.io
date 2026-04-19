@@ -2,27 +2,21 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>🌱 Huerto con Simulación de Crecimiento</title>
+<title>🌱 Huerto Inteligente Informativo</title>
 
 <style>
-body { font-family: Arial; background-color: #f0f8f5; }
+body { font-family: Arial; background:#f0f8f5; }
 h1 { color: green; }
-.seccion { background: white; padding: 10px; margin: 10px; border-radius: 10px; }
-.cultivo { border: 1px solid #ccc; padding: 10px; margin: 10px; background: white; }
-button { margin-top: 5px; cursor: pointer; }
-
-.info { font-size: 13px; color: #333; }
-
-.etapa {
-    font-weight: bold;
-    margin-top: 5px;
-}
+.seccion { background:white; padding:10px; margin:10px; border-radius:10px; }
+.cultivo { border:1px solid #ccc; padding:10px; margin:10px; background:white; }
+button { margin-top:5px; cursor:pointer; }
+.info { font-size:13px; line-height:1.5; color:#333; }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Mi Huerto Inteligente (Crecimiento por Días)</h1>
+<h1>🌱 Huerto Inteligente (Guía Profesional)</h1>
 
 <div class="seccion">
 <h2>👤 Perfil</h2>
@@ -33,24 +27,91 @@ button { margin-top: 5px; cursor: pointer; }
 </div>
 
 <div class="seccion">
-<h2>🌿 Mi Huerto (vivo)</h2>
+<h2>🌿 Mi Huerto</h2>
 <div id="huerto"></div>
 </div>
 
-<h2 style="margin-left:10px;">📚 Catálogo</h2>
+<h2 style="margin-left:10px;">📚 Catálogo de Cultivos</h2>
+
+<input id="busqueda" placeholder="🔍 Buscar cultivo..." onkeyup="mostrarCatalogo()">
+
 <div id="catalogo"></div>
 
 <script>
 
 const plantas = [
-{ id:1, nombre:"Maíz 🌽", dias:10, info:"Crecimiento rápido en clima cálido." },
-{ id:2, nombre:"Frijol 🫘", dias:8, info:"Resistente y rápido." },
-{ id:3, nombre:"Jitomate 🍅", dias:25, info:"Necesita soporte al crecer." },
-{ id:4, nombre:"Lechuga 🥬", dias:12, info:"Prefiere clima fresco." },
-{ id:5, nombre:"Zanahoria 🥕", dias:20, info:"Crecimiento subterráneo lento." }
+{
+id:1,
+nombre:"Maíz 🌽",
+agua:"💧 25–40 mm por semana (riego profundo)",
+sol:"☀️ 6–8 horas diarias de sol directo",
+suelo:"🌍 Franco-arenoso, profundo, bien drenado, pH 6.0–7.0",
+fertilizante:"🧪 Alto en nitrógeno (N) al inicio, luego fósforo (P) y potasio (K)",
+info:"Planta de crecimiento alto que requiere espacio y nutrientes constantes."
+},
+
+{
+id:2,
+nombre:"Frijol 🫘",
+agua:"💧 20–30 mm por semana, evitar encharcamientos",
+sol:"☀️ 5–7 horas de sol",
+suelo:"🌍 Suelto, ligero, buen drenaje, pH 6.0–7.5",
+fertilizante:"🧪 Bajo fertilizante, ya que fija nitrógeno naturalmente",
+info:"Mejora el suelo gracias a su capacidad de fijar nitrógeno."
+},
+
+{
+id:3,
+nombre:"Jitomate 🍅",
+agua:"💧 30–50 mm por semana, riego constante sin exceso",
+sol:"☀️ 6–8 horas de sol directo",
+suelo:"🌍 Rico en materia orgánica, bien drenado, pH 6.0–6.8",
+fertilizante:"🧪 Alto en potasio y fósforo para floración y fruto",
+info:"Muy sensible a cambios bruscos de humedad."
+},
+
+{
+id:4,
+nombre:"Lechuga 🥬",
+agua:"💧 25–35 mm por semana, mantener suelo húmedo",
+sol:"☀️ 3–5 horas o semisombra",
+suelo:"🌍 Suelto, fresco, rico en humus, pH 6.0–7.0",
+fertilizante:"🧪 Moderado en nitrógeno",
+info:"Crece mejor en climas frescos, el calor la amarga."
+},
+
+{
+id:5,
+nombre:"Zanahoria 🥕",
+agua:"💧 20–30 mm por semana",
+sol:"☀️ 6 horas de sol",
+suelo:"🌍 Profundo, sin piedras, suelto, pH 6.0–6.8",
+fertilizante:"🧪 Bajo nitrógeno, alto en potasio",
+info:"El suelo debe estar completamente suelto para raíces rectas."
+},
+
+{
+id:6,
+nombre:"Mango 🥭",
+agua:"💧 40–60 mm por semana (árbol joven más frecuente)",
+sol:"☀️ 8 horas de sol directo",
+suelo:"🌍 Arenoso-limoso, profundo, pH 5.5–7.5",
+fertilizante:"🧪 Rico en potasio y micronutrientes",
+info:"Árbol tropical de crecimiento lento pero estable."
+},
+
+{
+id:7,
+nombre:"Sandía 🍉",
+agua:"💧 40–70 mm por semana (más en fructificación)",
+sol:"☀️ 8–10 horas de sol",
+suelo:"🌍 Arenoso, ligero, muy drenado, pH 6.0–6.8",
+fertilizante:"🧪 Alto en potasio para frutos dulces",
+info:"Necesita espacio amplio para expandirse."
+}
 ];
 
-// 🌱 PERFIL
+// 👤 PERFIL
 function guardarPerfil(){
     let nombre = document.getElementById("nombre").value;
     let ubicacion = document.getElementById("ubicacion").value;
@@ -62,34 +123,46 @@ function guardarPerfil(){
     "👋 Hola " + nombre + " desde " + ubicacion;
 }
 
-// 🌿 CATÁLOGO
+// 📚 CATÁLOGO
 function mostrarCatalogo(){
     let div = document.getElementById("catalogo");
+    let filtro = document.getElementById("busqueda").value.toLowerCase();
+
     div.innerHTML = "";
 
-    plantas.forEach((p) => {
+    plantas
+    .filter(p => p.nombre.toLowerCase().includes(filtro))
+    .forEach(p => {
 
         div.innerHTML += `
         <div class="cultivo">
             <h3>${p.nombre}</h3>
-            <p>${p.info}</p>
-            <p>⏳ Ciclo: ${p.dias} días</p>
+
+            <div class="info">
+                <p>${p.info}</p>
+                <p>${p.agua}</p>
+                <p>${p.sol}</p>
+                <p>${p.suelo}</p>
+                <p>${p.fertilizante}</p>
+            </div>
 
             <button onclick="agregar(${p.id})">
-                ➕ Plantar
+                ➕ Agregar al huerto
             </button>
         </div>
         `;
     });
 }
 
-// 🌱 AGREGAR PLANTA (con fecha de siembra)
+// ➕ AGREGAR
 function agregar(id){
     let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
 
+    let planta = plantas.find(p => p.id === id);
+
     huerto.push({
-        ...plantas.find(p => p.id === id),
-        fecha: Date.now()
+        ...planta,
+        fecha: new Date().toLocaleDateString()
     });
 
     localStorage.setItem("huerto", JSON.stringify(huerto));
@@ -97,57 +170,41 @@ function agregar(id){
 }
 
 // 🗑️ ELIMINAR
-function eliminar(id){
+function eliminar(nombre){
     let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
 
-    huerto = huerto.filter(p => p.fecha !== id);
+    huerto = huerto.filter(p => p.nombre !== nombre);
 
     localStorage.setItem("huerto", JSON.stringify(huerto));
     mostrarHuerto();
 }
 
-// 📆 CALCULAR ETAPA DE CRECIMIENTO
-function calcularEtapa(diasPasados, diasTotal){
-
-    let progreso = diasPasados / diasTotal;
-
-    if (progreso < 0.25) return "🌱 Semilla";
-    if (progreso < 0.5) return "🌿 Brote";
-    if (progreso < 0.8) return "🌾 Crecimiento";
-    if (progreso < 1) return "🌼 Casi lista";
-    return "🍅 Lista para cosecha";
-}
-
-// 🌿 MOSTRAR HUERTO
+// 🌿 HUERTO
 function mostrarHuerto(){
     let div = document.getElementById("huerto");
     let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
 
     div.innerHTML = "";
 
-    huerto.forEach((p) => {
-
-        let diasPasados = Math.floor((Date.now() - p.fecha) / (1000 * 60 * 60 * 24));
-        let etapa = calcularEtapa(diasPasados, p.dias);
-
+    huerto.forEach(p => {
         div.innerHTML += `
         <div class="cultivo">
             <h3>${p.nombre}</h3>
+            <div class="info">
+                <p>${p.info}</p>
+                <p>${p.agua}</p>
+                <p>${p.sol}</p>
+                <p>${p.suelo}</p>
+                <p>${p.fertilizante}</p>
+            </div>
+            <p>📅 ${p.fecha}</p>
 
-            <p class="info">${p.info}</p>
-
-            <p>📅 Días desde siembra: ${diasPasados}</p>
-            <p>⏳ Ciclo total: ${p.dias} días</p>
-
-            <p class="etapa">Estado: ${etapa}</p>
-
-            <button onclick="eliminar(${p.fecha})">🗑️ Eliminar</button>
+            <button onclick="eliminar('${p.nombre}')">🗑️ Eliminar</button>
         </div>
         `;
     });
 }
 
-// 🚀 INICIO
 window.onload = function(){
     mostrarCatalogo();
     mostrarHuerto();
