@@ -2,265 +2,234 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>🌱 Huerto Inteligente Enciclopedia</title>
+<title>🌱 Huerto Simulador MEGA PRO</title>
 
 <style>
-body { font-family: Arial; background-color: #f0f8f5; }
+body { font-family: Arial; background:#f0f8f5; }
 h1 { color: green; }
-.seccion { background: white; padding: 10px; margin: 10px; border-radius: 10px; }
-.cultivo { border: 1px solid #ccc; padding: 10px; margin: 10px; background: white; }
-button { margin-top: 5px; cursor: pointer; }
 
-input { padding: 5px; margin: 5px; }
+.seccion { background:white; margin:10px; padding:10px; border-radius:10px; }
+.cultivo { border:1px solid #ccc; padding:10px; margin:10px; background:white; }
 
-.info { font-size: 13px; color: #333; line-height: 1.4; }
-small { color: gray; }
+button { margin:5px; cursor:pointer; }
+
+.bad { color:red; }
+.dead { color:black; font-weight:bold; }
+
+.bar { width:100%; height:10px; background:#ddd; border-radius:5px; }
+.bar-fill { height:100%; background:green; }
+
+.stat { font-weight:bold; }
 </style>
 </head>
 
 <body>
 
-<h1>🌱 Mi Huerto Inteligente (Versión Enciclopedia)</h1>
+<h1>🌱 Huerto Simulador MEGA PRO</h1>
 
 <div class="seccion">
-<h2>👤 Perfil</h2>
-<input id="nombre" placeholder="Nombre">
-<input id="ubicacion" placeholder="Ubicación">
-<button onclick="guardarPerfil()">Guardar</button>
-<p id="saludo"></p>
+<h2>🌦️ Mundo</h2>
+<p id="clima"></p>
+<p id="estacion"></p>
+<p class="stat">💰 Dinero: $<span id="dinero">0</span></p>
+<p class="stat">⭐ Nivel agricultor: <span id="nivel">1</span></p>
+<p class="stat">📊 XP: <span id="xp">0</span></p>
+<p class="stat">🏆 Puntos: <span id="puntos">0</span></p>
 </div>
 
 <div class="seccion">
-<h2>🌿 Mi Huerto</h2>
+<h2>💧 Acciones</h2>
+<button onclick="regar()">💧 Regar</button>
+<button onclick="fertilizar()">🧬 Fertilizar</button>
+</div>
+
+<div class="seccion">
+<h2>🌿 Huerto</h2>
 <div id="huerto"></div>
 </div>
 
-<h2 style="margin-left:10px;">📚 Catálogo EXTENSO de Cultivos</h2>
-
-<input id="busqueda" placeholder="🔍 Buscar cultivo..." onkeyup="mostrarCatalogo()">
-
-<div id="catalogo"></div>
-
 <script>
 
+// 🌱 PLANTAS
 const plantas = [
-{
-id:1,
-nombre:"Maíz 🌽",
-info:`
-💧 RIEGO:
-- Moderado constante, necesita humedad estable.
-- Si falta agua en floración, baja la producción.
-
-☀️ SOL:
-- Requiere sol directo 6–8 horas.
-- Sin sol crece débil y con mazorcas pequeñas.
-
-🌱 SUELO:
-- Profundo, fértil y aireado.
-- No soporta suelos compactos.
-
-🧪 FERTILIZACIÓN:
-- Alta en nitrógeno al inicio.
-- Después fósforo y potasio.
-
-⚠️ PROBLEMAS:
-- Gusanos en raíz.
-- Falta de nutrientes = hojas amarillas.
-
-💡 TIP:
-- Plántalo en bloques, no en línea para mejor polinización.
-`
-},
-
-{
-id:2,
-nombre:"Frijol 🫘",
-info:`
-💧 RIEGO:
-- Moderado, sin exceso.
-- Encharcarlo lo mata rápido.
-
-☀️ SOL:
-- 6 horas de sol mínimo.
-
-🌱 SUELO:
-- Ligero y aireado.
-- Fija nitrógeno en el suelo (mejora la tierra).
-
-🧪 FERTILIZACIÓN:
-- Poco fertilizante necesario.
-
-⚠️ PROBLEMAS:
-- Hongos por humedad.
-- Pulgones.
-
-💡 TIP:
-- Plántalo cerca de maíz (sistema tradicional milpa).
-`
-},
-
-{
-id:3,
-nombre:"Jitomate 🍅",
-info:`
-💧 RIEGO:
-- Constante pero sin encharcar.
-- Cambios bruscos causan grietas en el fruto.
-
-☀️ SOL:
-- 6–8 horas diarias.
-
-🌱 SUELO:
-- Rico en nutrientes y drenado.
-
-🧪 FERTILIZACIÓN:
-- Alta en potasio para frutos grandes.
-
-⚠️ PROBLEMAS:
-- Hongos en hojas.
-- Plagas como mosca blanca.
-
-💡 TIP:
-- Usa tutores o se cae por el peso.
-`
-},
-
-{
-id:4,
-nombre:"Lechuga 🥬",
-info:`
-💧 RIEGO:
-- Frecuente, suelo húmedo siempre.
-
-☀️ SOL:
-- Semisombra ideal.
-
-🌱 SUELO:
-- Suelto y fresco.
-
-🧪 FERTILIZACIÓN:
-- Moderada.
-
-⚠️ PROBLEMAS:
-- Amargura por calor.
-- Se espiga si hace mucho sol.
-
-💡 TIP:
-- Cosecha temprano para mejor sabor.
-`
-},
-
-{
-id:5,
-nombre:"Zanahoria 🥕",
-info:`
-💧 RIEGO:
-- Constante pero suave.
-
-☀️ SOL:
-- Sol directo.
-
-🌱 SUELO:
-- Profundo, sin piedras.
-- Si hay piedras salen deformes.
-
-🧪 FERTILIZACIÓN:
-- Media, evita exceso de nitrógeno.
-
-⚠️ PROBLEMAS:
-- Raíces torcidas.
-
-💡 TIP:
-- No trasplantar, si no se daña la raíz.
-`
-}
+{ id:1, nombre:"Maíz 🌽", valor:10 },
+{ id:2, nombre:"Frijol 🫘", valor:8 },
+{ id:3, nombre:"Jitomate 🍅", valor:15 },
+{ id:4, nombre:"Lechuga 🥬", valor:6 }
 ];
 
-function guardarPerfil(){
-    let nombre = document.getElementById("nombre").value;
-    let ubicacion = document.getElementById("ubicacion").value;
+// 🌍 ESTADO GLOBAL
+let estado = {
+    clima:"soleado ☀️",
+    efecto:1.2,
+    estacion:"verano ☀️",
+    dinero:0,
+    xp:0,
+    nivel:1,
+    puntos:0
+};
 
-    localStorage.setItem("nombre", nombre);
-    localStorage.setItem("ubicacion", ubicacion);
+// 💾 STORAGE
+function getH(){ return JSON.parse(localStorage.getItem("huerto")||"[]"); }
+function setH(h){ localStorage.setItem("huerto",JSON.stringify(h)); }
 
-    document.getElementById("saludo").innerText =
-    "👋 Hola " + nombre + " desde " + ubicacion;
+// 🌦️ CLIMA
+function clima(){
+    const tipos=[
+        {t:"soleado ☀️",e:1.3},
+        {t:"lluvioso 🌧️",e:1.5},
+        {t:"seco 🔥",e:0.7},
+        {t:"nublado ☁️",e:1.0}
+    ];
+    let c=tipos[Math.floor(Math.random()*tipos.length)];
+    estado.clima=c.t;
+    estado.efecto=c.e;
 }
 
-function mostrarCatalogo(){
-    let div = document.getElementById("catalogo");
-    let filtro = document.getElementById("busqueda").value.toLowerCase();
+// 🍂 ESTACIONES
+function estacion(){
+    const e=["primavera 🌸","verano ☀️","otoño 🍂","invierno ❄️"];
+    estado.estacion=e[Math.floor(Math.random()*e.length)];
+}
 
-    div.innerHTML = "";
+// 🌱 PLANTAR
+function plantar(id){
+    let h=getH();
+    h.push({...plantas.find(p=>p.id==id),crecimiento:0,plaga:false,muerto:false});
+    setH(h);
+    render();
+}
 
-    plantas
-    .filter(p => p.nombre.toLowerCase().includes(filtro))
-    .forEach((p) => {
+// 💧 RIEGO
+function regar(){
+    let h=getH();
+    h.forEach(p=>{ if(!p.muerto) p.crecimiento+=0.25; });
+    setH(h);
+}
 
-        div.innerHTML += `
+// 🧬 FERTILIZAR
+function fertilizar(){
+    let h=getH();
+    h.forEach(p=>{
+        if(!p.muerto){
+            p.crecimiento+=0.6;
+            p.plaga=false;
+        }
+    });
+    setH(h);
+}
+
+// 💀 PLAGAS
+function plagas(){
+    let h=getH();
+    h.forEach(p=>{
+        if(!p.muerto && Math.random()<0.2) p.plaga=true;
+    });
+    setH(h);
+}
+
+// 🌱 CRECIMIENTO + ECONOMÍA
+function crecer(){
+    let h=getH();
+
+    h.forEach(p=>{
+        if(p.muerto) return;
+
+        let base=0.1*estado.efecto;
+
+        if(p.plaga) p.crecimiento-=0.08;
+        else p.crecimiento+=base;
+
+        if(p.crecimiento<=0){
+            p.muerto=true;
+            estado.puntos+=1;
+        }
+
+        if(p.crecimiento>1.5){
+            p.crecimiento=1.5;
+
+            // 💰 COSECHA AUTOMÁTICA
+            estado.dinero+=p.valor;
+            estado.xp+=5;
+            estado.puntos+=10;
+
+            p.muerto=true;
+        }
+    });
+
+    setH(h);
+    levelUp();
+}
+
+// 📈 NIVEL
+function levelUp(){
+    if(estado.xp>=20){
+        estado.nivel++;
+        estado.xp=0;
+    }
+}
+
+// 📊 BARRA
+function bar(v){
+    return `<div class="bar"><div class="bar-fill" style="width:${Math.min(v/1.5*100,100)}%"></div></div>`;
+}
+
+// 🌱 ETAPA
+function etapa(v,m){
+    if(m) return "💀 Muerta";
+    if(v<0.3) return "🌱 Semilla";
+    if(v<0.7) return "🌿 Brote";
+    if(v<1.2) return "🌾 Creciendo";
+    return "🍅 Lista";
+}
+
+// 🌿 RENDER
+function render(){
+    let div=document.getElementById("huerto");
+    let h=getH();
+
+    div.innerHTML="";
+
+    h.forEach(p=>{
+        div.innerHTML+=`
         <div class="cultivo">
             <h3>${p.nombre}</h3>
 
-            <div class="info">
-                ${p.info.replace(/\n/g, "<br>")}
-            </div>
+            <p>${etapa(p.crecimiento,p.muerto)}</p>
 
-            <button onclick="agregar(${p.id})">
-                ➕ Agregar al huerto
-            </button>
+            ${bar(p.crecimiento)}
+
+            <p class="${p.plaga?'bad':''}">
+                ${p.plaga?"💀 Plaga":"🌿 Saludable"}
+            </p>
+
+            <p>💰 valor: $${p.valor}</p>
         </div>
         `;
     });
+
+    document.getElementById("clima").innerText=
+    estado.clima;
+
+    document.getElementById("estacion").innerText=
+    "🍂 Estación: "+estado.estacion;
+
+    document.getElementById("dinero").innerText=estado.dinero;
+    document.getElementById("nivel").innerText=estado.nivel;
+    document.getElementById("xp").innerText=estado.xp;
+    document.getElementById("puntos").innerText=estado.puntos;
 }
 
-function agregar(id){
-    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
+// 🔁 LOOP
+setInterval(()=>{
+    clima();
+    estacion();
+    crecer();
+    plagas();
+    render();
+},3000);
 
-    let planta = plantas.find(p => p.id === id);
-
-    huerto.push({
-        nombre: planta.nombre,
-        info: planta.info,
-        fecha: new Date().toLocaleDateString()
-    });
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-function eliminar(nombre){
-    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
-
-    huerto = huerto.filter(p => p.nombre !== nombre);
-
-    localStorage.setItem("huerto", JSON.stringify(huerto));
-    mostrarHuerto();
-}
-
-function mostrarHuerto(){
-    let div = document.getElementById("huerto");
-    let huerto = JSON.parse(localStorage.getItem("huerto") || "[]");
-
-    div.innerHTML = "";
-
-    huerto.forEach((p) => {
-        div.innerHTML += `
-        <div class="cultivo">
-            <h3>${p.nombre}</h3>
-            <div class="info">${p.info.replace(/\n/g,"<br>")}</div>
-            <p>📅 ${p.fecha}</p>
-
-            <button onclick="eliminar('${p.nombre}')">🗑️ Eliminar</button>
-        </div>
-        `;
-    });
-}
-
-window.onload = function(){
-    mostrarCatalogo();
-    mostrarHuerto();
-}
+window.onload=render;
 
 </script>
 
